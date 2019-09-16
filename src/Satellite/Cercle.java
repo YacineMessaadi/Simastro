@@ -2,23 +2,23 @@ package Satellite;
 
 public class Cercle extends Satellite {
 	
-	private Foyer f1;
+	private Satellite centre;
 	private double vitx;
 	private double vity;
 
-	public Cercle(double m, double px, double py, Foyer fo1, double vx, double vy) {
+	public Cercle(double m, double px, double py, Satellite fo1, double vx, double vy) {
 		super(m, px, py);
-		f1 = fo1;
+		centre = fo1;
 		vitx = vx;
 		vity = vy;	
 	}
 
-	public Foyer getF1() {
-		return f1;
+	public Satellite getcentre() {
+		return centre;
 	}
 
-	public void setF1(Foyer f1) {
-		this.f1 = f1;
+	public void setcentre(Satellite centre) {
+		this.centre = centre;
 	}
 
 	public double getVitx() {
