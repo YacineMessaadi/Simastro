@@ -1,6 +1,6 @@
 package Satellite;
 
-public abstract class Simulé extends Foyer {
+public class Simulé extends Foyer {
 
 	private double vitx;
 	private double vity;

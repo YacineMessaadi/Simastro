@@ -1,6 +1,6 @@
 package Satellite;
 
-public abstract class Ellipse extends Satellite{
+public class Ellipse extends Satellite{
 
 	private double vitx;
 	private double vity;

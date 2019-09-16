@@ -1,6 +1,6 @@
 package Satellite;
 
-public abstract class Cercle extends Satellite {
+public class Cercle extends Satellite {
 	
 	private Foyer f1;
 	private double vitx;

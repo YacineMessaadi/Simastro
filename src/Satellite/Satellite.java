@@ -1,6 +1,6 @@
 package Satellite;
 
-public abstract class Satellite {
+public class Satellite {
 	
 	private double masse;
 	private double posx;
