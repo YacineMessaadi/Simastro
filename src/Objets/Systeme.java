@@ -8,7 +8,7 @@ public class Systeme {
     private double fA;
     private double dT;
     double rayon;
-    ArrayList<Satellite> listAstre;
+    ArrayList<Satellite> listAstre = new ArrayList<Satellite>();
 
     public Systeme(){
         listAstre = new ArrayList<Satellite>();
@@ -17,6 +17,14 @@ public class Systeme {
 
     public Systeme(double gravite, double fa, double dT, double rayon){
         this.gravite=gravite; this.fA=fa; this.dT=dT; this.rayon=rayon;
+    }
+    
+    public void addListAstres(Satellite s) {
+    	this.listAstre.add(s);
+    }
+    
+    public ArrayList<Satellite> getSatellites(){
+    	return listAstre;
     }
 
 }
