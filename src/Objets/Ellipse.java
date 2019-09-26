@@ -1,4 +1,4 @@
-package Satellite;
+package Objets;
 
 public class Ellipse extends Satellite{
 

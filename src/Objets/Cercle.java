@@ -1,4 +1,4 @@
-package Satellite;
+package Objets;
 
 public class Cercle extends Satellite {
 	
