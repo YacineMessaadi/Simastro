@@ -1,5 +1,6 @@
 package Util;
 
+import Objets.Fixe;
 import Objets.Objet;
 import Objets.Simulé;
 import Objets.Soleil;
@@ -31,12 +32,15 @@ public class Sauvegarde {
 					}
 					sys = new Systeme(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[2]),
 							Double.parseDouble(valeur2[1]), Double.parseDouble(valeur2[3]));
-					
+
 				} else if (thisLine.startsWith("Soleil:"))
 					sys.addListAstres(chargerSoleil(thisLine));
-				else if (!thisLine.startsWith("#"))
-					sys.addListAstres(chargerSimule(thisLine));
-
+				else if (!thisLine.startsWith("#")) {
+					if (thisLine.contains("Simulé"))
+						sys.addListAstres(chargerSimule(thisLine));
+					else if (thisLine.contains("Fixe"))
+						sys.addListAstres(chargerFixe(thisLine));
+				}
 			}
 			return sys;
 		} catch (IOException e) {
@@ -64,11 +68,21 @@ public class Sauvegarde {
 				Double.parseDouble(valeur2[2]), Double.parseDouble(valeur2[3]), Double.parseDouble(valeur2[4]));
 	}
 
+	public static Fixe chargerFixe(String thisLine) throws FileNotFoundException {
+		String valeur[] = thisLine.split(" ");
+		String valeur2[] = new String[valeur.length];
+		for (int i = 2; i < valeur.length; i++)
+			valeur2[i - 2] = valeur[i].split("=")[1];
+		System.out.println("Fixe trouvé !");
+		return new Fixe(Integer.parseInt(valeur2[0]), Integer.parseInt(valeur2[1]), Integer.parseInt(valeur2[2]));
+	}
+
 	public static void main(String[] args) throws FileNotFoundException {
 		Sauvegarde s = new Sauvegarde("01_CorpsTombeSurSoleil.astro");
 		Systeme sys = s.charger();
 		System.out.println(sys.getSatellites().size());
-		for(Objet sat : sys.getSatellites()) System.out.println(sat.getMasse());
+		for (Objet sat : sys.getSatellites())
+			System.out.println(sat.getMasse());
 	}
 
 }
