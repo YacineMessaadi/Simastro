@@ -48,7 +48,7 @@ public class Interface extends Application{
 		ouvrir.setOnAction(e ->{
 			File file = fileChooser.showOpenDialog(stage);
 			if(file!=null){
-				Sauvegarde save = new Sauvegarde(file.getName());
+				Sauvegarde save = new Sauvegarde(file);
 				root.setCenter(Screen.generateGroup(save));
 			}
 		});

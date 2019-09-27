@@ -10,14 +10,14 @@ import javafx.scene.control.Alert;
 import java.io.*;
 
 public class Sauvegarde {
-	private String path;
+	private File file;
 
-	public Sauvegarde(String path) {
-		this.path = "save/" + path;
+	public Sauvegarde(File file) {
+		this.file = file;
 	}
 
 	public Systeme charger(){
-		File astroFile = new File(path);
+		File astroFile = file;
 		System.out.print("Le fichier " + astroFile.getName() + " à été chargé.");
 		BufferedReader br = null;
 		try {
@@ -86,7 +86,7 @@ public class Sauvegarde {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
-		Sauvegarde s = new Sauvegarde("01_CorpsTombeSurSoleil.astro");
+		Sauvegarde s = new Sauvegarde(new File("01_CorpsTombeSurSoleil.astro"));
 		Systeme sys = s.charger();
 		System.out.println(sys.getSatellites().size());
 		for (Objet sat : sys.getSatellites())
