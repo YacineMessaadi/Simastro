@@ -10,6 +10,8 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -28,28 +30,31 @@ public class Screen {
 
     public void start(Stage primaryStage) throws FileNotFoundException {
 
-        primaryStage.setTitle("Simastro");
+    }
+
+    public static Group generateGroup(Sauvegarde sauvegarde) {
         Group groupGraphic = new Group();
-        primaryStage.setScene(new Scene(groupGraphic,1920,1080));
-        double sceneCenterX = primaryStage.getScene().getWidth()/2;
-        double sceneCenterY = primaryStage.getScene().getHeight()/2;
+        groupGraphic.setStyle("-fx-background-color: black;");
+        Systeme sys = sauvegarde.charger();
 
-        Sauvegarde s = new Sauvegarde("01_CorpsTombeSurSoleil.astro");
-        Systeme sys = s.charger();
+        double sceneCenterX = groupGraphic.getLayoutX() / 2;
+        double sceneCenterY = groupGraphic.getLayoutY() / 2;
         ArrayList<Objet> listObjet = sys.getSatellites();
-        for(Objet o: listObjet){
-            System.out.println(o.getPosx() +" & " + o.getPosy());
-            Circle c = new Circle(o.getPosx()+sceneCenterX,o.getPosy()+sceneCenterY,100);
-            if(o.getClass().getName().equals("Objets.Soleil")){
 
+        for (Objet o : listObjet) {
+            System.out.println(o.getPosx() + " & " + o.getPosy());
+            Circle c = new Circle(o.getPosx() + sceneCenterX, o.getPosy() + sceneCenterY, (15 + o.getMasse()) * 2);
+            if (o.getClass().getName().equals("Objets.Soleil")) {
                 c.setFill(Color.YELLOW);
+                c.setStrokeWidth(c.getRadius() / 10);
+                c.setStroke(Color.ORANGE);
             } else {
                 c.setFill(Color.GREEN);
+                c.setStrokeWidth(c.getRadius() / 10);
+                c.setStroke(Color.DARKGREEN);
             }
             groupGraphic.getChildren().add(c);
         }
-
-
-        primaryStage.show();
+        return groupGraphic;
     }
 }

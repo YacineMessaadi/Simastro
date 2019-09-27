@@ -1,5 +1,6 @@
 package Affichage;
 
+import Util.Sauvegarde;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,7 +14,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 
 public class Interface extends Application{
@@ -22,6 +26,7 @@ public class Interface extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		// TODO Auto-generated method stub
+		final FileChooser fileChooser = new FileChooser();
 		BorderPane root = new BorderPane();
 		VBox tableauBordGauche = new VBox();
 		VBox tableauBordDroite = new VBox();
@@ -35,7 +40,19 @@ public class Interface extends Application{
 		Menu edition = new Menu("Edition");
 		Menu aide = new Menu("Aide");
 		MenuItem nouveau=new MenuItem("Nouveau");
+		nouveau.setOnAction(e->{
+
+		});
+
 		MenuItem ouvrir = new MenuItem("Ouvrir");
+		ouvrir.setOnAction(e ->{
+			File file = fileChooser.showOpenDialog(stage);
+			if(file!=null){
+				Sauvegarde save = new Sauvegarde(file.getName());
+				root.setCenter(Screen.generateGroup(save));
+			}
+		});
+
 		MenuItem enregistrer = new MenuItem("Enregistrer");
 		MenuItem enregistrerSous = new MenuItem("Enregistrer Sous");
 		fichier.getItems().addAll(nouveau,ouvrir,enregistrer,enregistrerSous);

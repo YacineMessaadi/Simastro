@@ -5,6 +5,7 @@ import Objets.Objet;
 import Objets.Simulé;
 import Objets.Soleil;
 import Objets.Systeme;
+import javafx.scene.control.Alert;
 
 import java.io.*;
 
@@ -15,10 +16,17 @@ public class Sauvegarde {
 		this.path = "save/" + path;
 	}
 
-	public Systeme charger() throws FileNotFoundException {
+	public Systeme charger(){
 		File astroFile = new File(path);
 		System.out.print("Le fichier " + astroFile.getName() + " à été chargé.");
-		BufferedReader br = new BufferedReader(new FileReader(astroFile));
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(astroFile));
+		} catch (FileNotFoundException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setContentText("Le fichier de sauvegarder indiquer n'existe pas");
+			alert.show();
+		}
 		Systeme sys = null;
 		try {
 			String thisLine;
