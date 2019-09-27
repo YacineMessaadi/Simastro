@@ -1,6 +1,6 @@
 package Objets;
 
-public class Simulé extends Satellite {
+public class Simulé extends Objet {
 
 	private double vitx;
 	private double vity;

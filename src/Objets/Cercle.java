@@ -1,23 +1,23 @@
 package Objets;
 
-public class Cercle extends Satellite {
+public class Cercle extends Objet {
 	
-	private Satellite centre;
+	private Objet centre;
 	private double vitx;
 	private double vity;
 
-	public Cercle(double m, double px, double py, Satellite fo1, double vx, double vy) {
+	public Cercle(double m, double px, double py, Objet fo1, double vx, double vy) {
 		super(m, px, py);
 		centre = fo1;
 		vitx = vx;
 		vity = vy;	
 	}
 
-	public Satellite getcentre() {
+	public Objet getcentre() {
 		return centre;
 	}
 
-	public void setcentre(Satellite centre) {
+	public void setcentre(Objet centre) {
 		this.centre = centre;
 	}
 

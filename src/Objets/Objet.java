@@ -1,12 +1,14 @@
 package Objets;
 
-public class Satellite {
+import javafx.scene.Node;
+
+public class Objet{
 	
 	private double masse;
 	private double posx;
 	private double posy;
 	
-	public Satellite(double m, double px, double py) {
+	public Objet(double m, double px, double py) {
 		masse = m;
 		posx = px;
 		posy = py;

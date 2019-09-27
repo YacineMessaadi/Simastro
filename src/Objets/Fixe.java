@@ -1,11 +1,9 @@
 package Objets;
 
-public class Fixe extends Satellite {
-	
-	public Fixe(int m, int px, int py){
+public class Fixe extends Objet {
+
+	public Fixe(int m, int px, int py) {
 		super(m, px, py);
 	}
-	
-	
 
 }

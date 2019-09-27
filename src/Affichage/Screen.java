@@ -1,5 +1,10 @@
 package Affichage;
 
+import Objets.Cercle;
+import Objets.Objet;
+import Objets.Soleil;
+import Objets.Systeme;
+import Util.Sauvegarde;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -17,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 
 public class Screen {
 
@@ -24,36 +30,26 @@ public class Screen {
 
         primaryStage.setTitle("Simastro");
         Group groupGraphic = new Group();
-        primaryStage.setScene(new Scene(groupGraphic,1500,800));
+        primaryStage.setScene(new Scene(groupGraphic,1920,1080));
+        double sceneCenterX = primaryStage.getScene().getWidth()/2;
+        double sceneCenterY = primaryStage.getScene().getHeight()/2;
 
-        Circle soleil = new Circle();
-        soleil.setCenterX(750);
-        soleil.setCenterY(400);
-        soleil.setRadius(100);
-        soleil.setFill(Color.YELLOW);
-        soleil.setStroke(Color.ORANGE);
-        soleil.setStrokeWidth(5);
+        Sauvegarde s = new Sauvegarde("01_CorpsTombeSurSoleil.astro");
+        Systeme sys = s.charger();
+        ArrayList<Objet> listObjet = sys.getSatellites();
+        for(Objet o: listObjet){
+            System.out.println(o.getPosx() +" & " + o.getPosy());
+            Circle c = new Circle(o.getPosx()+sceneCenterX,o.getPosy()+sceneCenterY,100);
+            if(o.getClass().getName().equals("Objets.Soleil")){
 
-        Circle terre = new Circle();
-        terre.setCenterX(550);
-        terre.setCenterY(500);
-        terre.setRadius(20);
-        terre.setFill(Color.GREEN);
-        terre.setStroke(Color.DARKGREEN);
-        terre.setStrokeWidth(2);
+                c.setFill(Color.YELLOW);
+            } else {
+                c.setFill(Color.GREEN);
+            }
+            groupGraphic.getChildren().add(c);
+        }
 
-        Rotate rotate = new Rotate(0,750,400);
-        terre.getTransforms().add(rotate);
 
-        Timeline timeline = new Timeline();
-        timeline.getKeyFrames().addAll(
-                new KeyFrame(Duration.ZERO, new KeyValue(rotate.angleProperty(), 0)),
-                new KeyFrame(new Duration(10000), new KeyValue(rotate.angleProperty(), 360))
-        );
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-
-        groupGraphic.getChildren().addAll(soleil,terre);
         primaryStage.show();
     }
 }

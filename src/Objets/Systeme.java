@@ -8,10 +8,10 @@ public class Systeme {
     private double fA;
     private double dT;
     double rayon;
-    ArrayList<Satellite> listAstre = new ArrayList<Satellite>();
+    ArrayList<Objet> listAstre = new ArrayList<Objet>();
 
     public Systeme(){
-        listAstre = new ArrayList<Satellite>();
+        listAstre = new ArrayList<Objet>();
         gravite = 1; fA = 1; dT = 1; rayon = 500;
     }
 
@@ -19,11 +19,11 @@ public class Systeme {
         this.gravite=gravite; this.fA=fa; this.dT=dT; this.rayon=rayon;
     }
     
-    public void addListAstres(Satellite s) {
+    public void addListAstres(Objet s) {
     	this.listAstre.add(s);
     }
     
-    public ArrayList<Satellite> getSatellites(){
+    public ArrayList<Objet> getSatellites(){
     	return listAstre;
     }
 

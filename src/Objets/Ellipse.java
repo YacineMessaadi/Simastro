@@ -1,6 +1,6 @@
 package Objets;
 
-public class Ellipse extends Satellite{
+public class Ellipse extends Objet {
 
 	private double vitx;
 	private double vity;

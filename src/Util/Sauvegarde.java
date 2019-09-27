@@ -1,6 +1,6 @@
 package Util;
 
-import Objets.Satellite;
+import Objets.Objet;
 import Objets.Simulé;
 import Objets.Soleil;
 import Objets.Systeme;
@@ -8,13 +8,13 @@ import Objets.Systeme;
 import java.io.*;
 
 public class Sauvegarde {
-	static String path;
+	private String path;
 
 	public Sauvegarde(String path) {
 		this.path = "save/" + path;
 	}
 
-	public static Systeme charger() throws FileNotFoundException {
+	public Systeme charger() throws FileNotFoundException {
 		File astroFile = new File(path);
 		System.out.print("Le fichier " + astroFile.getName() + " à été chargé.");
 		BufferedReader br = new BufferedReader(new FileReader(astroFile));
@@ -68,7 +68,7 @@ public class Sauvegarde {
 		Sauvegarde s = new Sauvegarde("01_CorpsTombeSurSoleil.astro");
 		Systeme sys = s.charger();
 		System.out.println(sys.getSatellites().size());
-		for(Satellite sat : sys.getSatellites()) System.out.println(sat.getMasse());
+		for(Objet sat : sys.getSatellites()) System.out.println(sat.getMasse());
 	}
 
 }
