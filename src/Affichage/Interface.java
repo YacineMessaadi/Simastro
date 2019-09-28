@@ -2,6 +2,7 @@ package Affichage;
 
 import Util.Sauvegarde;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -10,10 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -29,8 +29,11 @@ public class Interface extends Application{
 		final FileChooser fileChooser = new FileChooser();
 		BorderPane root = new BorderPane();
 		VBox tableauBordGauche = new VBox();
+		tableauBordGauche.setStyle("-fx-background-color: #e6e6e6;");
 		VBox tableauBordDroite = new VBox();
+		tableauBordDroite.setStyle("-fx-background-color: #e6e6e6;");
 		HBox hbox = new HBox();
+		hbox.setStyle("-fx-background-color: white;");
 		hbox.setAlignment(Pos.CENTER);
 		
 				
@@ -80,7 +83,11 @@ public class Interface extends Application{
 		root.setRight(tableauBordDroite);
 		root.setCenter(pane);
 		root.setBottom(hbox);
-		
+		Image etoileImage = new Image("file:resources/fondEtoile.jpg",true);
+		BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage,BackgroundRepeat.REPEAT,BackgroundRepeat.REPEAT,BackgroundPosition.DEFAULT,BackgroundSize.DEFAULT);
+		root.setBackground(new Background(etoileImageBackground));
+		//root.setBackground(new Background(new BackgroundFill(Color.rgb(40, 40, 40), CornerRadii.EMPTY, Insets.EMPTY)));
+
 		Scene scene = new Scene(root, 900, 700);
 		stage.setScene(scene);
 		stage.setTitle("Simastro");

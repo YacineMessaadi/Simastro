@@ -24,7 +24,7 @@ public class Sauvegarde {
 			br = new BufferedReader(new FileReader(astroFile));
 		} catch (FileNotFoundException e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setContentText("Le fichier de sauvegarder indiquer n'existe pas");
+			alert.setContentText("Le fichier de sauvegarder indiqué n'existe pas");
 			alert.show();
 		}
 		Systeme sys = null;

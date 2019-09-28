@@ -11,6 +11,8 @@ import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -35,6 +37,12 @@ public class Screen {
     public static Group generateGroup(Sauvegarde sauvegarde) {
         Group groupGraphic = new Group();
         groupGraphic.setStyle("-fx-background-color: black;");
+        Canvas fond = new Canvas(500,500);
+        GraphicsContext gc = fond.getGraphicsContext2D();
+        gc.setFill(Color.BLACK);
+
+
+        groupGraphic.getChildren().add(fond);
         Systeme sys = sauvegarde.charger();
 
         double sceneCenterX = groupGraphic.getLayoutX() / 2;
