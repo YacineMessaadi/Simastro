@@ -13,14 +13,10 @@ public class ThreadTrajectoire extends Thread {
 		this.running = false;
 	}
 	
-	public void run() {
+	public void run(int n) {
 		while(running) {
 			System.out.println("Test thread");
-			try {
-				Scanner sc = new Scanner(System.in);
-			    System.out.println("Enter the n value :");
-			    int n = sc.nextInt();
-			      
+			try {      
 			    for (int i = 1; i <= n; i++){
 			    	int x = 1;
 			        for (int j = 2; j < i; j++){
