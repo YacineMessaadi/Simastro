@@ -9,13 +9,28 @@ import javafx.scene.control.Alert;
 
 import java.io.*;
 
+	/**
+	 * 
+	 * @author lantoing, dautrich, messaady, tryoeny
+	 *
+	 */
 public class Sauvegarde {
 	private File file;
 
+	/**
+	 * Sauvegarde
+	 * Constructeur d'un objet Sauvegarde
+	 * @param file
+	 */
 	public Sauvegarde(File file) {
 		this.file = file;
 	}
-
+	
+	/**
+	 * charger
+	 * Charge Système depuis une sauvegarde
+	 * @return Systeme;
+	 */
 	public Systeme charger(){
 		File astroFile = file;
 		System.out.print("Le fichier " + astroFile.getName() + " à été chargé.");
@@ -57,6 +72,11 @@ public class Sauvegarde {
 		return null;
 	}
 
+	/**
+	 * chargerSoleil
+	 * Charge Soleil depuis une sauvegarde
+	 * @return Soleil;
+	 */
 	public static Soleil chargerSoleil(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
 		String valeur2[] = new String[valeur.length];
@@ -75,7 +95,12 @@ public class Sauvegarde {
 		return new Simulé(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]),
 				Double.parseDouble(valeur2[2]), Double.parseDouble(valeur2[3]), Double.parseDouble(valeur2[4]));
 	}
-
+	
+	/**
+	 * chargerFixe
+	 * Charge Fixe depuis une sauvegarde
+	 * @return Fixe;
+	 */
 	public static Fixe chargerFixe(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
 		String valeur2[] = new String[valeur.length];
