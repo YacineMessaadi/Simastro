@@ -1,8 +1,6 @@
 package Objets;
 
-import javafx.scene.Node;
-
-public class Objet{
+public abstract class Objet{
 	
 	private double masse;
 	private double posx;

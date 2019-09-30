@@ -2,7 +2,7 @@ package Util;
 
 import Objets.Fixe;
 import Objets.Objet;
-import Objets.Simulé;
+import Objets.Simule;
 import Objets.Soleil;
 import Objets.Systeme;
 import javafx.scene.control.Alert;
@@ -66,13 +66,13 @@ public class Sauvegarde {
 		return new Soleil(Integer.parseInt(valeur2[0]), Integer.parseInt(valeur2[1]), Integer.parseInt(valeur2[2]));
 	}
 
-	public static Simulé chargerSimule(String thisLine) throws FileNotFoundException {
+	public static Simule chargerSimule(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
 		String valeur2[] = new String[valeur.length];
 		for (int i = 2; i < valeur.length; i++)
 			valeur2[i - 2] = valeur[i].split("=")[1];
 		System.out.println("Simulé trouvé !");
-		return new Simulé(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]),
+		return new Simule(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]),
 				Double.parseDouble(valeur2[2]), Double.parseDouble(valeur2[3]), Double.parseDouble(valeur2[4]));
 	}
 

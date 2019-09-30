@@ -1,11 +1,11 @@
 package Objets;
 
-public class Simulé extends Objet {
+public class Simule extends Objet {
 
 	private double vitx;
 	private double vity;
 	
-	public Simulé(double m, double px, double py, double vx, double vy){
+	public Simule(double m, double px, double py, double vx, double vy){
 		super(m, px, py);
 		vitx = vx;
 		vity = vy;	

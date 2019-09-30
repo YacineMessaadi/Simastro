@@ -7,8 +7,8 @@ public class Systeme {
     private double gravite;
     private double fA;
     private double dT;
-    double rayon;
-    ArrayList<Objet> listAstre = new ArrayList<Objet>();
+    private double rayon;
+    private ArrayList<Objet> listAstre = new ArrayList<Objet>();
 
     public Systeme(){
         listAstre = new ArrayList<Objet>();
