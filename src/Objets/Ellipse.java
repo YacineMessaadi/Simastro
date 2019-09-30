@@ -33,37 +33,73 @@ public class Ellipse extends Objet {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * getVitx
+	 * Retourne la valeur de l'attribut vitx d'une Ellipse
+	 * @return double
 	 */
 	public double getVitx() {
 		return vitx;
 	}
-
+	
+	/**
+	 * setVitx
+	 * Attribue la valeur en paramètre à l'attribut vitx
+	 * @param vitx
+	 */
 	public void setVitx(double vitx) {
 		this.vitx = vitx;
 	}
-
+	
+	/**
+	 * getVity
+	 * Retourne la valeur de l'attribut vity d'une Ellipse
+	 * @return double
+	 */
 	public double getVity() {
 		return vity;
 	}
 
+	/**
+	 * setVity
+	 * Attribue la valeur en paramètre à l'attribut vity
+	 * @param vity
+	 */
 	public void setVity(double vity) {
 		this.vity = vity;
 	}
 
+	/**
+	 * getF1
+	 * Retourne la valeur de l'attribut f1 d'une Ellipse
+	 * @return Fixe
+	 */
 	public Fixe getF1() {
 		return f1;
 	}
 
+	/**
+	 * setF1
+	 * Attribue la valeur en paramètre à l'attribut f1 d'une Ellipse
+	 * @param f1
+	 */
 	public void setF1(Fixe f1) {
 		this.f1 = f1;
 	}
-
+	
+	/**
+	 * getF2
+	 * Retourne la valeur de l'attribut f2 d'une Ellipse
+	 * @return Fixe
+	 */
 	public Fixe getF2() {
 		return f2;
 	}
 
+	/**
+	 * setF2
+	 * Attribue la valeur en paramètre à l'attribut f2 d'une Ellipse
+	 * @param f2
+	 */
 	public void setF2(Fixe f2) {
 		this.f2 = f2;
 	}

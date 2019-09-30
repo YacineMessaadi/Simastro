@@ -1,5 +1,11 @@
 package Objets;
 
+/**
+ * 
+ * @author lantoing, dautrich, messaady, tryoeny
+ *
+ */
+
 public class Cercle extends Simule {
 	
 	private Objet centre;

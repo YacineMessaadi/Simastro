@@ -75,6 +75,7 @@ public class Sauvegarde {
 	/**
 	 * chargerSoleil
 	 * Charge Soleil depuis une sauvegarde
+	 * @param thisLine
 	 * @return Soleil;
 	 */
 	public static Soleil chargerSoleil(String thisLine) throws FileNotFoundException {
@@ -99,6 +100,7 @@ public class Sauvegarde {
 	/**
 	 * chargerFixe
 	 * Charge Fixe depuis une sauvegarde
+	 * @param thisLine
 	 * @return Fixe;
 	 */
 	public static Fixe chargerFixe(String thisLine) throws FileNotFoundException {
