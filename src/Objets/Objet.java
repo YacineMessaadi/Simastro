@@ -1,23 +1,16 @@
 package Objets;
 
-<<<<<<< HEAD
-public abstract class Objet{
-=======
-import javafx.scene.Node;
-
 /**
  * 
  * @author lantoing, dautrich, messaady, tryoeny
  *
  */
+public abstract class Objet{
 
-public class Objet{
->>>>>>> branch 'master' of https://git-iut.univ-lille1.fr/tryoeny/projet_modelisation.git
-	
 	private double masse;
 	private double posx;
 	private double posy;
-	
+
 	/**
 	 * Objet
 	 * Constructeur d'un objet Object
@@ -84,7 +77,6 @@ public class Objet{
 	public void setPosy(double posy) {
 		this.posy = posy;
 	}
-	
-	
+
 
 }

@@ -1,5 +1,11 @@
 package Objets;
 
+/**
+ * 
+ * @author lantoing, dautrich, messaady, tryoeny
+ *
+ */
+
 public class Ellipse extends Objet {
 
 	private double vitx;
@@ -7,6 +13,17 @@ public class Ellipse extends Objet {
 	private Fixe f1;
 	private Fixe f2;
 	
+	/**
+	 * Ellipse
+	 * Constructeur d'un objet Ellispe avec attributs spécifiés
+	 * @param m
+	 * @param px
+	 * @param py
+	 * @param vx
+	 * @param vy
+	 * @param fixe1
+	 * @param fixe2
+	 */
 	public Ellipse(double m, double px, double py, double vx, double vy, Fixe fixe1, Fixe fixe2){
 		super(m, px, py);
 		vitx = vx;
@@ -15,7 +32,10 @@ public class Ellipse extends Objet {
 		f2 = fixe2;
 	}
 	
-
+	/**
+	 * 
+	 * @return
+	 */
 	public double getVitx() {
 		return vitx;
 	}
