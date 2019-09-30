@@ -1,4 +1,4 @@
-package Objets;
+package Modele.Objets;
 
 import java.util.ArrayList;
 

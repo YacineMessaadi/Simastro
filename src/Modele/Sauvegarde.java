@@ -1,13 +1,14 @@
-package Util;
+package Modele;
 
-import Objets.Fixe;
-import Objets.Objet;
-import Objets.Simule;
-import Objets.Soleil;
-import Objets.Systeme;
 import javafx.scene.control.Alert;
 
 import java.io.*;
+
+import Modele.Objets.Fixe;
+import Modele.Objets.Objet;
+import Modele.Objets.Simule;
+import Modele.Objets.Soleil;
+import Modele.Objets.Systeme;
 
 	/**
 	 * 

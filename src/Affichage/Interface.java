@@ -1,6 +1,5 @@
 package Affichage;
 
-import Util.Sauvegarde;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,6 +17,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+
+import Modele.Sauvegarde;
 
 
 public class Interface extends Application{

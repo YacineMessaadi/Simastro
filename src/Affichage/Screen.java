@@ -1,10 +1,5 @@
 package Affichage;
 
-import Objets.Cercle;
-import Objets.Objet;
-import Objets.Soleil;
-import Objets.Systeme;
-import Util.Sauvegarde;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -27,6 +22,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+
+import Modele.Sauvegarde;
+import Modele.Objets.Cercle;
+import Modele.Objets.Objet;
+import Modele.Objets.Soleil;
+import Modele.Objets.Systeme;
 
 public class Screen {
 
