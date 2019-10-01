@@ -21,10 +21,11 @@ import java.io.File;
 import Modele.Sauvegarde;
 
 /**
- * Yohan
- * @author tryoeny
+ * Gautier
+ * @author lantoing
  *
  */
+
 public class Interface extends Application{
 
 
