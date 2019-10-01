@@ -13,7 +13,7 @@ import Modele.Objets.Systeme;
 	/**
 	 * 
 	 * @author lantoing, dautrich, messaady, tryoeny
-	 *
+	 * Modele
 	 */
 public class Sauvegarde {
 	private File file;
