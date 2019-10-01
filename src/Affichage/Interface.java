@@ -20,6 +20,11 @@ import java.io.File;
 
 import Modele.Sauvegarde;
 
+/**
+ * Gautier
+ * @author lantoing
+ *
+ */
 
 public class Interface extends Application{
 
