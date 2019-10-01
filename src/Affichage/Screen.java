@@ -53,7 +53,7 @@ public class Screen {
         for (Objet o : listObjet) {
             System.out.println(o.getPosx() + " & " + o.getPosy());
             Circle c = new Circle(o.getPosx() + sceneCenterX, o.getPosy() + sceneCenterY, (15 + o.getMasse()) * 2);
-            if (o.getClass().getName().equals("Objets.Soleil")) {
+            if (o.getClass().getName().equals("Modele.Objets.Soleil")) {
                 c.setFill(Color.YELLOW);
                 c.setStrokeWidth(c.getRadius() / 10);
                 c.setStroke(Color.ORANGE);
