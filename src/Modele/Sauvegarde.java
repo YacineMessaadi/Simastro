@@ -1,7 +1,5 @@
 package Modele;
 
-import javafx.scene.control.Alert;
-
 import java.io.*;
 
 import Modele.Objets.Fixe;
@@ -10,38 +8,35 @@ import Modele.Objets.Simule;
 import Modele.Objets.Soleil;
 import Modele.Objets.Systeme;
 
-	/**
-	 * 
-	 * @author lantoing, dautrich, messaady, tryoeny
-	 *
-	 */
+/**
+ * 
+ * @author lantoing, dautrich, messaady, tryoeny
+ *
+ */
 public class Sauvegarde {
 	private File file;
 
 	/**
-	 * Sauvegarde
-	 * Constructeur d'un objet Sauvegarde
+	 * Sauvegarde Constructeur d'un objet Sauvegarde
+	 * 
 	 * @param file
 	 */
 	public Sauvegarde(File file) {
 		this.file = file;
 	}
-	
+
 	/**
-	 * charger
-	 * Charge Système depuis une sauvegarde
+	 * charger Charge Système depuis une sauvegarde
+	 * 
 	 * @return Systeme;
 	 */
-	public Systeme charger(){
+	public Systeme charger() {
 		File astroFile = file;
 		System.out.print("Le fichier " + astroFile.getName() + " à été chargé.");
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(astroFile));
 		} catch (FileNotFoundException e) {
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setContentText("Le fichier de sauvegarder indiqué n'existe pas");
-			alert.show();
 		}
 		Systeme sys = null;
 		try {
@@ -74,8 +69,8 @@ public class Sauvegarde {
 	}
 
 	/**
-	 * chargerSoleil
-	 * Charge Soleil depuis une sauvegarde
+	 * chargerSoleil Charge Soleil depuis une sauvegarde
+	 * 
 	 * @param thisLine
 	 * @return Soleil;
 	 */
@@ -97,10 +92,10 @@ public class Sauvegarde {
 		return new Simule(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]),
 				Double.parseDouble(valeur2[2]), Double.parseDouble(valeur2[3]), Double.parseDouble(valeur2[4]));
 	}
-	
+
 	/**
-	 * chargerFixe
-	 * Charge Fixe depuis une sauvegarde
+	 * chargerFixe Charge Fixe depuis une sauvegarde
+	 * 
 	 * @param thisLine
 	 * @return Fixe;
 	 */
