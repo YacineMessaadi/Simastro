@@ -1,6 +1,6 @@
 package Modele.Objets;
 
-public class Vaisseau extends Simulé{
+public class Vaisseau extends Simule{
 
 	private double pprincipal;
 	private double pretro;
@@ -16,6 +16,23 @@ public class Vaisseau extends Simulé{
 		this.pprincipal = pprincipal;
 		this.pretro = pretro;
 	}
+	
+	public double getPprincipal() {
+		return pprincipal;
+	}
+	
+	public double getPretro() {
+		return pretro;
+	}
+
+	public void setPprincipal(double pprincipal) {
+		this.pprincipal = pprincipal;
+	}
+
+	public void setPretro(double pretro) {
+		this.pretro = pretro;
+	}
+	
 	
 
 }

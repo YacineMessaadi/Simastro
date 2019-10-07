@@ -69,11 +69,21 @@ public class Systeme extends Observable {
 		return dT;
 	}
 	
+	public double getGravite() {
+		return gravite;
+	}
+	
 	public void info() {
 		this.setChanged();
 		this.notifyObservers();
 	}
 	
+	public Vaisseau getVaisseau() {
+		for(Objet s : this.listAstre) {
+			if(s instanceof Vaisseau) return (Vaisseau) s;
+		}
+		return null;
+	}
 	
 
 }

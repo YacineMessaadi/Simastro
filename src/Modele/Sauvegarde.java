@@ -7,6 +7,7 @@ import Modele.Objets.Objet;
 import Modele.Objets.Simule;
 import Modele.Objets.Soleil;
 import Modele.Objets.Systeme;
+import Modele.Objets.Vaisseau;
 
 /**
  * 
@@ -55,7 +56,9 @@ public class Sauvegarde {
 				} else if (thisLine.startsWith("Soleil:"))
 					sys.addListAstres(chargerSoleil(thisLine));
 				else if (!thisLine.startsWith("#")) {
-					if (thisLine.contains("Simulé"))
+					if (thisLine.contains("Vaisseau"))
+						sys.addListAstres(chargerVaisseau(thisLine));
+					else if (thisLine.contains("Simulé"))
 						sys.addListAstres(chargerSimule(thisLine));
 					else if (thisLine.contains("Fixe"))
 						sys.addListAstres(chargerFixe(thisLine));
@@ -66,6 +69,20 @@ public class Sauvegarde {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static Vaisseau chargerVaisseau(String thisLine) throws FileNotFoundException {
+		String valeur[] = thisLine.split(" ");
+		String valeur2[] = new String[valeur.length];
+		for (int i = 2; i < valeur.length; i++)
+			valeur2[i - 2] = valeur[i].split("=")[1];
+		System.out.println("Vaisseau trouvé !");
+		if (valeur2.length == 5)
+			return new Vaisseau(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]),
+					Double.parseDouble(valeur2[2]), Double.parseDouble(valeur2[3]), Double.parseDouble(valeur2[4]));
+		return new Vaisseau(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]),
+				Double.parseDouble(valeur2[2]), Double.parseDouble(valeur2[3]), Double.parseDouble(valeur2[4]),
+				Double.parseDouble(valeur2[5]), Double.parseDouble(valeur2[6]));
 	}
 
 	/**
