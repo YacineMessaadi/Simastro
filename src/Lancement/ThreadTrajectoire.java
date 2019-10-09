@@ -52,7 +52,7 @@ public class ThreadTrajectoire implements Runnable {
 						o.setPosy(o.getPosy() + ((Simule) o).getVity());
 					}
 				}
-				Thread.sleep((long) (s.getdT() * 1000));
+				Thread.sleep((long) (s.getdT() * 1000*(1/s.getfA())));
 			} catch (InterruptedException ex) {
 				ex.printStackTrace();
 				cancel();

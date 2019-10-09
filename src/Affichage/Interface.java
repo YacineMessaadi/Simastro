@@ -21,6 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -39,12 +41,13 @@ public class Interface extends Application {
 
 	BorderPane root = new BorderPane();
 	public Systeme sys;
-	ImagePattern soleil = new ImagePattern(new Image("file:resources/soleil.png"));
-	ImagePattern planete = new ImagePattern(new Image("file:resources/planete.png"));
-	ImagePattern vaisseau = new ImagePattern(new Image("file:resources/vaisseau.png"));
+	Image soleil = new Image("file:resources/soleil.png");
+	Image planete = new Image("file:resources/planete.png");
+	Image vaisseau = new Image("file:resources/vaisseau.png");
 	VaisseauControler vc = new VaisseauControler();
+	Canvas canvas = new Canvas(500,500);
+	public double scale = 1;
 
-	Rectangle r = new Rectangle(0, 0, 50, 50);
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -73,7 +76,7 @@ public class Interface extends Application {
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
 				Sauvegarde save = new Sauvegarde(file);
-				root.setCenter(generateGroup(save));
+				root.setCenter(generateCanvas(save));
 			}
 		});
 
@@ -129,9 +132,7 @@ public class Interface extends Application {
 		root.setRight(tableauBordDroite);
 		root.setCenter(pane);
 		root.setBottom(hbox);
-		
-		r.setFill(vaisseau);
-		root.setCenter(generateGroup(sys));
+		root.setCenter(generateCanvas(sys));
 
 		tableauBordGauche.setPrefWidth(100);
 		tableauBordDroite.setPrefWidth(100);
@@ -151,7 +152,7 @@ public class Interface extends Application {
 
 					@Override
 					public void run() {
-						root.setCenter(generateGroup(sys));
+						refresh(sys);
 						temps.setText((Double.parseDouble(temps.getText()) + sys.getdT() + ""));
 						if (v != null) {
 							positionX.setText("X = " + Math.round(v.getPosx()));
@@ -184,87 +185,55 @@ public class Interface extends Application {
 	public void update(Observable o, Object arg1) {
 		if (o instanceof Systeme) {
 			System.out.println("Update");
-			root.setCenter(generateGroup((Systeme) o));
+			root.setCenter(generateCanvas((Systeme) o));
 		}
 	}
 
-	public Group generateGroup(Sauvegarde sauvegarde) {
-		Group groupGraphic = new Group();
-		groupGraphic.setStyle("-fx-background-color: black;");
-		Canvas fond = new Canvas(500, 500);
-		GraphicsContext gc = fond.getGraphicsContext2D();
-		gc.setFill(Color.BLACK);
-
-		groupGraphic.getChildren().add(fond);
-		Systeme s = sauvegarde.charger();
-		this.sys = s;
-
-		double sceneCenterX = groupGraphic.getLayoutX() / 2;
-		double sceneCenterY = groupGraphic.getLayoutY() / 2;
+	public void refresh(Systeme s){
+		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		ArrayList<Objet> listObjet = s.getSatellites();
-
-		for (Objet o : listObjet) {
-
-			if (o.getClass().getName().equals("Modele.Objets.Soleil")) {
-				Circle c = new Circle(o.getPosx() + sceneCenterX, o.getPosy() + sceneCenterY, (9 + o.getMasse()) * 2);
-				c.setFill(soleil);
-				c.setStrokeWidth(c.getRadius() / 10);
-				groupGraphic.getChildren().add(c);
-			} else if (o.getClass().getName().equals("Modele.Objets.Vaisseau")) {
-				r.setX(o.getPosx() + sceneCenterX);
-				r.setY(o.getPosy() + sceneCenterY);
-				double distX = (o.getPosx() + ((Vaisseau) o).getVitx()) - o.getPosx();
-				double distY = (o.getPosy() + ((Vaisseau) o).getVity()) - o.getPosx();
-				double angle = Math.atan2(distY, distX);
-				r.setRotate(angle);
-
-				groupGraphic.getChildren().add(r);
-			} else {
-				Circle c = new Circle(o.getPosx() + sceneCenterX, o.getPosy() + sceneCenterY, (9 + o.getMasse()) * 2);
-				c.setFill(planete);
-				c.setStrokeWidth(c.getRadius() / 10);
-				groupGraphic.getChildren().add(c);
-			}
-
-		}
-		return groupGraphic;
-	}
-
-	public Group generateGroup(Systeme s) {
-		Group groupGraphic = new Group();
-		groupGraphic.setStyle("-fx-background-color: black;");
-		Canvas fond = new Canvas(500, 500);
-		GraphicsContext gc = fond.getGraphicsContext2D();
-		gc.setFill(Color.BLACK);
-		groupGraphic.getChildren().add(fond);
-		double sceneCenterX = groupGraphic.getLayoutX() / 2;
-		double sceneCenterY = groupGraphic.getLayoutY() / 2;
-		ArrayList<Objet> listObjet = s.getSatellites();
+		canvas.setStyle("-fx-background-color: black;");
+		GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+		graphicsContext.scale(scale,scale);
+		scale = 1;
 
 		for (Objet o : listObjet) {
 			if (o instanceof Soleil) {
-				Circle c = new Circle(o.getPosx() + sceneCenterX, o.getPosy() + sceneCenterY, (9 + o.getMasse()) * 2);
-				c.setFill(soleil);
-				c.setStrokeWidth(c.getRadius() / 10);
-				groupGraphic.getChildren().add(c);
+				graphicsContext.drawImage(soleil,o.getPosx(),o.getPosy(),o.getMasse()*10,o.getMasse()*10 );
+				graphicsContext.setFill(Color.BLUE);
+				graphicsContext.fillText("Soleil",o.getPosx(),o.getPosy()+10);
 			} else if (o instanceof Vaisseau) {
-				r.setX(o.getPosx() + sceneCenterX);
-				r.setY(o.getPosy() + sceneCenterY);
-				double distX = (o.getPosx() + ((Vaisseau) o).getVitx()) - o.getPosx();
-				double distY = (o.getPosy() + ((Vaisseau) o).getVity()) - o.getPosy();
-				double angle = Math.toDegrees(Math.atan2(distY, distX));
-				System.out.println(angle);
-				r.setRotate(angle);
-				groupGraphic.getChildren().add(r);
+				graphicsContext.drawImage(vaisseau,o.getPosx(),o.getPosy(),o.getMasse()*10,o.getMasse()*10 );
+				graphicsContext.setFill(Color.BLUE);
+				graphicsContext.fillText("Vaisseau",o.getPosx(),o.getPosy()-(o.getMasse()*5));
 			} else {
-				Circle c = new Circle(o.getPosx() + sceneCenterX, o.getPosy() + sceneCenterY, (9 + o.getMasse()) * 2);
-				c.setFill(planete);
-				c.setStrokeWidth(c.getRadius() / 10);
-				groupGraphic.getChildren().add(c);
+				graphicsContext.drawImage(planete,o.getPosx(),o.getPosy(),o.getMasse()*10,o.getMasse()*10 );
+				graphicsContext.setFill(Color.GREEN);
+				graphicsContext.fillText("Planéte",o.getPosx(),o.getPosy()-(o.getMasse()*5));
 			}
-
 		}
-		return groupGraphic;
+	}
+
+
+	public Canvas generateCanvas(Systeme s) {
+		refresh(s);
+		canvas.setHeight(s.getRayon()*2);
+		canvas.setWidth(s.getRayon()*2);
+		root.setCenter(canvas);
+		canvas.setOnScroll(e -> {
+			scale += (e.getDeltaY()/1000);
+		});
+
+		canvas.setOnMousePressed(e -> {
+			//canvas.getGraphicsContext2D()
+		});
+		return canvas;
+	}
+
+
+	public Canvas generateCanvas(Sauvegarde sauvegarde) {
+		Systeme sys = sauvegarde.charger();
+		return generateCanvas(sys);
 	}
 
 }

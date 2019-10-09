@@ -84,6 +84,8 @@ public class Systeme extends Observable {
 		}
 		return null;
 	}
-	
 
+	public double getRayon() {
+		return rayon;
+	}
 }
