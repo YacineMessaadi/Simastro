@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -13,6 +14,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -234,12 +236,26 @@ public class Interface extends Application {
 				graphicsContext.fillText("Soleil", (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
 			} else if (o instanceof Vaisseau) {
-				graphicsContext.drawImage(vaisseau, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
-						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
-						(o.getMasse()) * scale);
+				
+				double distX = (o.getPosx() + ((Vaisseau) o).getVitx()) - o.getPosx();
+				double distY = (o.getPosy() + ((Vaisseau) o).getVity()) - o.getPosy();
+				double angle = Math.toDegrees(Math.atan2(distY, distX));
+
+				ImageView iv = new ImageView(vaisseau);
+				iv.setRotate(angle);
+				SnapshotParameters params = new SnapshotParameters();
+				params.setFill(Color.TRANSPARENT);
+				Image rotatedImage = iv.snapshot(params, null);
+				graphicsContext.drawImage(rotatedImage, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
+						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()*2000) * scale,
+						(o.getMasse()*2000) * scale);
+
 				graphicsContext.setFill(Color.BLUE);
 				graphicsContext.fillText("Vaisseau", (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
+				trace.getGraphicsContext2D().fillRect((o.getPosx() + moitieX + axeX) * scale,
+						(o.getPosy() + moitieY + axeY) * scale, 1, 1);
+				
 			} else {
 				graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
