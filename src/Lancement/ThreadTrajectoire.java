@@ -27,7 +27,7 @@ public class ThreadTrajectoire implements Runnable {
 						double xTotal = 0;
 						double yTotal = 0;
 						for (Objet o1 : s.getSatellites()) {
-							if (o != o1 && !collision(o, o1)) {
+							if (o != o1) {
 								double distX = o1.getPosx() - o.getPosx();
 								double distY = o1.getPosy() - o.getPosy();
 								double distance = Math.sqrt(distX * distX + distY * distY);
