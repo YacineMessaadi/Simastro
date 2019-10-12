@@ -14,6 +14,7 @@ public class Systeme extends Observable {
 	private double gravite;
 	private double fA;
 	private double dT;
+
 	private double rayon;
 	private ArrayList<Objet> listAstre = new ArrayList<Objet>();
 

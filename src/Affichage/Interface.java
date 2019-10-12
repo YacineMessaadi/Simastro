@@ -2,7 +2,9 @@ package Affichage;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,6 +17,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -28,7 +31,19 @@ import Modele.Objets.Soleil;
 import Modele.Objets.Systeme;
 import Modele.Objets.Vaisseau;
 public class Interface extends Application {
-
+	/**
+	 * BorderPane root : BorderPane directement à la base de la scene.
+	 * Systeme sys : Le systeme affiché au centre du root à l'aide d'un canvas, lui meme dans un Pane. NOTE : Le pane est facultatif il permet juste de gerer plus facilement les limites du canvas
+	 * Image soleil : Image par defaut d'un soleil.
+	 * Image planete : Image par defaut d'une planete.
+	 * Image vaisseau : Image par defaut d'un vaisseau.
+	 * Image etoileImage : Image par defaut du fond.
+	 * Canvas canvas : canvas qui va servir à l'affichage du systeme.
+	 * double axeX : le decalage à appliqué a tout les objet en X lors de l'affichage, il permet de simuler un deplacement de la vue
+	 * double axeY : le decalage à appliqué a tout les objet en Y lors de l'affichage, il permet de simuler un deplacement de la vue
+	 * double scale : le parametre qui permet de simuler le zoom, on multiplie la taille des objets par le scale, mais egalement la position
+	 *
+	 */
 	BorderPane root = new BorderPane();
 	public Systeme sys;
 	Image soleil = new Image("file:resources/soleil.png");
@@ -40,11 +55,13 @@ public class Interface extends Application {
 	Image etoileImage = new Image("file:resources/espace.jpg");
 	double axeX;
 	double axeY;
-
-
 	public double scale = 1;
+
+	// Quand on fait OnMousePressed sur le canvas, on enregistre la position du curseur pour calculer le décalage à appliquer
 	private double xStart = 0;
 	private double yStart = 0;
+
+	//Sert a savoir si l'affichage suit actuellement un objet, pour desactiver le deplacement par exemple
 	private boolean following= false;
 
 
@@ -127,7 +144,7 @@ public class Interface extends Application {
 			}
 		};
 
-		root.setCenter(generateCanvas(sys));
+		root.setCenter(generatePane(sys));
 
 		root.setTop(menuBar);
 		root.setLeft(tableauBordGauche);
@@ -137,12 +154,11 @@ public class Interface extends Application {
 		tableauBordGauche.setPrefWidth(100);
 		tableauBordDroite.setPrefWidth(100);
 
-		//BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage, BackgroundRepeat.REPEAT,
-		//		BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+		BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage, BackgroundRepeat.REPEAT,
+				BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
 		//pane.setBackground(new Background(etoileImageBackground));
 
-		// root.setBackground(new Background(new BackgroundFill(Color.rgb(40, 40, 40),
-		// CornerRadii.EMPTY, Insets.EMPTY)));
+		root.setBackground(new Background(etoileImageBackground));
 
 		Thread thread = new Thread(new Runnable() {
 
@@ -179,7 +195,7 @@ public class Interface extends Application {
 		scene.setOnKeyPressed(keyListener);
 		stage.setScene(scene);
 		stage.setTitle("Simastro");
-		stage.setFullScreen(true);
+		stage.setFullScreen(false);
 		stage.show();
 	}
 
@@ -190,16 +206,20 @@ public class Interface extends Application {
 		}
 	}
 
-	public void refresh(Systeme s){
+	// La fonction refresh va nettoyer le canvas et le remplir à l'aide de toute les coordonées des astres à l'instant ou il est appelée,
+	// c'est pour cela qu'il a besoin d'un Systeme en param,
+	// ATTENTION quand vous le modifiez !
+	// La position (SUR LE CANVAS) d'un objet est calculé en prennant en compte : [Sa position recalculé par rapport a la taille de l'ecran],
+	// [l'axeX et Y qui correspondent au décallage du au déplacement à l'aide de la souris] et [le Scale]
+	private void refresh(Systeme s){
 		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		ArrayList<Objet> listObjet = s.getSatellites();
 		GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-
+		//canvas.getGraphicsContext2D().drawImage(etoileImage,Double.MAX_VALUE,Double.MAX_VALUE);
 
 		for (Objet o : listObjet) {
 			double moitieX = (canvas.getWidth()/2)/scale;
 			double moitieY = (canvas.getHeight()/2)/scale;
-			canvas.getGraphicsContext2D().drawImage(etoileImage,Double.MAX_VALUE,Double.MAX_VALUE);
 			if (o instanceof Soleil) {
 				graphicsContext.drawImage(soleil,(o.getPosx()+moitieX+axeX)*scale,(o.getPosy()+moitieY+axeY)*scale,(o.getMasse())*scale,(o.getMasse())*scale);
 				graphicsContext.setFill(Color.BLUE);
@@ -217,8 +237,12 @@ public class Interface extends Application {
 		}
 	}
 
-
-	public Pane generateCanvas(Systeme s) {
+	/**
+	 * Genere un Pane qui encapsule un Canvas, lui meme genérée grace au Systeme donnée en param
+	 * @param s
+	 * @return Pane
+	 */
+	public Pane generatePane(Systeme s) {
 		Pane cage = new Pane();
 		cage.getChildren().add(canvas);
 		cage.getChildren().add(trace);
@@ -260,16 +284,17 @@ public class Interface extends Application {
 			xStart = event.getSceneX();
 			yStart = event.getSceneY();
 		});
-
-		//canvas.setTranslateX(cage.getLayoutX()/2);
-		//canvas.setTranslateY(cage.getLayoutY()/2);
-
 		return cage;
 	}
 
-	public Pane generateCanvas(Sauvegarde sauvegarde) {
+	/**
+	 * Genere un Pane qui encapsule un Canvas, lui meme genérée grace a la sauvegarde en param
+	 * @param sauvegarde
+	 * @return Pane
+	 */
+	public Pane generatePane(Sauvegarde sauvegarde) {
 		Systeme sys = sauvegarde.charger();
-		return generateCanvas(sys);
+		return generatePane(sys);
 	}
 
 }
