@@ -22,7 +22,7 @@ public class Systeme extends Observable {
 	 */
 	public Systeme() {
 		listAstre = new ArrayList<Objet>();
-		gravite = 1;
+		gravite = 9.807;
 		fA = 1;
 		dT = 1;
 		rayon = 500;
@@ -50,6 +50,10 @@ public class Systeme extends Observable {
 	 */
 	public void addListAstres(Objet s) {
 		this.listAstre.add(s);
+	}
+	
+	public void deleteAstre(Objet s) {
+		this.listAstre.remove(s);
 	}
 
 	/**

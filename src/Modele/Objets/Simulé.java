@@ -6,7 +6,7 @@ package Modele.Objets;
  *
  */
 
-public class Simul√© extends Objet {
+public class SimulÈ extends Objet {
 
 	private double vitx;
 	private double vity;
@@ -20,7 +20,7 @@ public class Simul√© extends Objet {
 	 * @param vx
 	 * @param vy
 	 */
-	public Simul√©(double m, double px, double py, double vx, double vy){
+	public SimulÈ(double m, double px, double py, double vx, double vy){
 		super(m, px, py);
 		vitx = vx;
 		vity = vy;	

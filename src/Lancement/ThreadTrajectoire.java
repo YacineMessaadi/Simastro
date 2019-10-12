@@ -27,7 +27,7 @@ public class ThreadTrajectoire implements Runnable {
 						double xTotal = 0;
 						double yTotal = 0;
 						for (Objet o1 : s.getSatellites()) {
-							if (o != o1) {
+							if (o != o1 && !collision(o, o1)) {
 								double distX = o1.getPosx() - o.getPosx();
 								double distY = o1.getPosy() - o.getPosy();
 								double distance = Math.sqrt(distX * distX + distY * distY);
@@ -64,6 +64,17 @@ public class ThreadTrajectoire implements Runnable {
 		return s.getGravite() * ((ma * mb) / (distance * distance));
 	}
 
+	public boolean collision(Objet o, Objet o1) {
+		if(o.getPosx() == o1.getPosx() && o.getPosy() == o1.getPosy()) {
+			if(o.getMasse() < o1.getMasse()) {
+				s.deleteAstre(o);
+			} else {
+				s.deleteAstre(o1);
+			}
+			return true;
+		}
+		return false;
+	}
 	/*
 	 * Pour lancer le thread
 	 * 
