@@ -16,7 +16,7 @@ public class Fixe extends Objet {
 	 * @param py
 	 */
 
-	public Fixe(int m, int px, int py) {
+	public Fixe(double m, double px, double py) {
 		super(m, px, py);
 	}
 

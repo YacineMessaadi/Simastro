@@ -36,6 +36,7 @@ public class Interface extends Application {
 	Image vaisseau = new Image("file:resources/vaisseau.png");
 	VaisseauControler vc = new VaisseauControler();
 	Canvas canvas = new Canvas(500,500);
+	Canvas trace = new Canvas(500, 500);
 	Image etoileImage = new Image("file:resources/espace.jpg");
 	double axeX;
 	double axeY;
@@ -210,7 +211,8 @@ public class Interface extends Application {
 			} else {
 				graphicsContext.drawImage(planete,(o.getPosx()+moitieX+axeX)*scale,(o.getPosy()+moitieY+axeY)*scale,(o.getMasse())*scale,(o.getMasse())*scale);
 				graphicsContext.setFill(Color.GREEN);
-				graphicsContext.fillText("Planéte",(o.getPosx()+moitieX+axeX)*scale,(o.getPosy()+moitieY+axeY)*scale);
+				graphicsContext.fillText("Planète",(o.getPosx()+moitieX+axeX)*scale,(o.getPosy()+moitieY+axeY)*scale);
+				trace.getGraphicsContext2D().fillRect((o.getPosx()+moitieX+axeX)*scale, (o.getPosy()+moitieY+axeY)*scale, 1, 1);
 			}
 		}
 	}
@@ -219,17 +221,24 @@ public class Interface extends Application {
 	public Pane generateCanvas(Systeme s) {
 		Pane cage = new Pane();
 		cage.getChildren().add(canvas);
+		cage.getChildren().add(trace);
+		trace.setMouseTransparent(true);
 		canvas.minHeight(0); canvas.minWidth(0);
 		canvas.prefHeight(500); canvas.prefWidth(500);
+		trace.minHeight(0); trace.minWidth(0);
+		trace.prefHeight(500); trace.prefWidth(500);
 		refresh(s);
 		canvas.widthProperty().bind(cage.widthProperty());
 		canvas.heightProperty().bind(cage.heightProperty());
+		trace.widthProperty().bind(cage.widthProperty());
+		trace.heightProperty().bind(cage.heightProperty());
 
 		canvas.setOnScroll(e -> {
 			//scale += (e.getDeltaY()/1000);
 
 			if(e.getDeltaY()>0) scale *= 1.1;
 			else if(e.getDeltaY()<0) scale *= 0.9;
+			trace.getGraphicsContext2D().clearRect(0, 0, trace.getWidth(), trace.getHeight());
 			refresh(s);
 			e.consume();
 		});
@@ -246,6 +255,7 @@ public class Interface extends Application {
 			axeX -= ( (xStart-event.getSceneX()))/scale;
 			axeY -= ( (yStart-event.getSceneY()))/scale;
 			System.out.println("axeX:"+axeX + "axeY:"+axeY);
+			trace.getGraphicsContext2D().clearRect(0, 0, trace.getWidth(), trace.getHeight());
 			refresh(s);
 			xStart = event.getSceneX();
 			yStart = event.getSceneY();

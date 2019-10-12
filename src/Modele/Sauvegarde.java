@@ -3,7 +3,6 @@ package Modele;
 import java.io.*;
 
 import Modele.Objets.Fixe;
-import Modele.Objets.Objet;
 import Modele.Objets.Simule;
 import Modele.Objets.Soleil;
 import Modele.Objets.Systeme;
@@ -93,21 +92,57 @@ public class Sauvegarde {
 	 */
 	public static Soleil chargerSoleil(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
-		String valeur2[] = new String[valeur.length];
-		for (int i = 2; i < valeur.length; i++)
+		String valeur2[] = new String[valeur.length-2];
+		for (int i = 2; i < valeur.length; i++) {
 			valeur2[i - 2] = valeur[i].split("=")[1];
+		}
+		String pow[] = new String[valeur2.length];
+		String nbr[] = new String[valeur2.length];
+		for (int i = 0; i < valeur2.length; i++) {
+			if (valeur2[i].contains("e")) {
+				pow[i] = valeur2[i].split("e")[1];
+				nbr[i] = valeur2[i].split("e")[0];
+			}
+			else {
+				pow[i] = "0";
+				nbr[i] = valeur2[i];
+			}
+		}
+
+		double m = Double.parseDouble(nbr[0]) * Math.pow(10, Double.parseDouble(pow[0]));
+		double px = Double.parseDouble(nbr[1]) * Math.pow(10, Double.parseDouble(pow[1]));
+		double py = Double.parseDouble(nbr[2]) * Math.pow(10, Double.parseDouble(pow[2]));
+
 		System.out.println("Soleil trouvé !");
-		return new Soleil(Integer.parseInt(valeur2[0]), Integer.parseInt(valeur2[1]), Integer.parseInt(valeur2[2]));
+		return new Soleil(m, px, py);
 	}
 
 	public static Simule chargerSimule(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
-		String valeur2[] = new String[valeur.length];
+		String valeur2[] = new String[valeur.length-2];
 		for (int i = 2; i < valeur.length; i++)
 			valeur2[i - 2] = valeur[i].split("=")[1];
+		String pow[] = new String[valeur2.length];
+		String nbr[] = new String[valeur2.length];
+		for (int i = 0; i < valeur2.length; i++) {
+			if (valeur2[i].contains("e")) {
+				pow[i] = valeur2[i].split("e")[1];
+				nbr[i] = valeur2[i].split("e")[0];
+			}
+			else {
+				pow[i] = "0";
+				nbr[i] = valeur2[i];
+			}
+		}
+
+		double m = Double.parseDouble(nbr[0]) * Math.pow(10, Double.parseDouble(pow[0]));
+		double px = Double.parseDouble(nbr[1]) * Math.pow(10, Double.parseDouble(pow[1]));
+		double py = Double.parseDouble(nbr[2]) * Math.pow(10, Double.parseDouble(pow[2]));
+		double vx = Double.parseDouble(nbr[3]) * Math.pow(10, Double.parseDouble(pow[3]));
+		double vy = Double.parseDouble(nbr[4]) * Math.pow(10, Double.parseDouble(pow[4]));
+
 		System.out.println("Simulé trouvé !");
-		return new Simule(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]),
-				Double.parseDouble(valeur2[2]), Double.parseDouble(valeur2[3]), Double.parseDouble(valeur2[4]));
+		return new Simule(m, px, py, vx, vy);
 	}
 
 	/**
@@ -122,15 +157,7 @@ public class Sauvegarde {
 		for (int i = 2; i < valeur.length; i++)
 			valeur2[i - 2] = valeur[i].split("=")[1];
 		System.out.println("Fixe trouvé !");
-		return new Fixe(Integer.parseInt(valeur2[0]), Integer.parseInt(valeur2[1]), Integer.parseInt(valeur2[2]));
-	}
-
-	public static void main(String[] args) throws FileNotFoundException {
-		Sauvegarde s = new Sauvegarde(new File("01_CorpsTombeSurSoleil.astro"));
-		Systeme sys = s.charger();
-		System.out.println(sys.getSatellites().size());
-		for (Objet sat : sys.getSatellites())
-			System.out.println(sat.getMasse());
+		return new Fixe(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]), Double.parseDouble(valeur2[2]));
 	}
 
 }
