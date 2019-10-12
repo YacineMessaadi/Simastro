@@ -63,18 +63,6 @@ public class ThreadTrajectoire implements Runnable {
 	public double gravitation(double ma, double mb, double distance) {
 		return s.getGravite() * ((ma * mb) / (distance * distance));
 	}
-
-	public boolean collision(Objet o, Objet o1) {
-		if(o.getPosx() == o1.getPosx() && o.getPosy() == o1.getPosy()) {
-			if(o.getMasse() < o1.getMasse()) {
-				s.deleteAstre(o);
-			} else {
-				s.deleteAstre(o1);
-			}
-			return true;
-		}
-		return false;
-	}
 	/*
 	 * Pour lancer le thread
 	 * 
