@@ -173,7 +173,9 @@ public class Interface extends Application {
 
 					@Override
 					public void run() {
-						cc.checkCollision(sys, astresImages);
+						if(cc.checkCollision(sys, astresImages)) {
+							// A FAIRE afficherCollision();
+						};
 						refresh(sys);
 						temps.setText((Double.parseDouble(temps.getText()) + sys.getdT() + ""));
 						if (v != null) {
