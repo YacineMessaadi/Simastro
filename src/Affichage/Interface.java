@@ -22,6 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -51,7 +53,6 @@ public class Interface extends Application {
 	Image soleil = new Image("file:resources/soleil.png");
 	Image planete = new Image("file:resources/planete.png");
 	Image vaisseau = new Image("file:resources/vaisseau.png");
-	Image collision = new Image("file:resources/planete.png");
 	VaisseauControler vc = new VaisseauControler();
 	CollisionController cc = new CollisionController();
 	Canvas canvas = new Canvas(500, 500);
@@ -114,10 +115,11 @@ public class Interface extends Application {
 		Label positionY = new Label("Y = " + 0);
 		tableauBordGauche.getChildren().addAll(position, positionX, positionY);
 
-		Label autre = new Label("Autre information ...");
+		Label autre = new Label("Timer :");
 		Label temps = new Label("0");
-		tableauBordDroite.getChildren().addAll(autre, temps);
-
+		
+		tableauBordDroite.getChildren().addAll(autre,temps);
+		tableauBordDroite.setAlignment(Pos.CENTER);
 		Button quitter = new Button("Quitter");
 		quitter.setOnAction(e -> {
 			stage.close();
@@ -154,30 +156,28 @@ public class Interface extends Application {
 		root.setRight(tableauBordDroite);
 		root.setBottom(hbox);
 
-		tableauBordGauche.setPrefWidth(100);
-		tableauBordDroite.setPrefWidth(100);
+		tableauBordGauche.setPrefWidth(150);
+		tableauBordDroite.setPrefWidth(10);
 
-		// BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage,
-		// BackgroundRepeat.REPEAT,
-		// BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-		// pane.setBackground(new Background(etoileImageBackground));
 
 		// root.setBackground(new Background(new BackgroundFill(Color.rgb(40, 40, 40),
 		// CornerRadii.EMPTY, Insets.EMPTY)));
 
 		Thread thread = new Thread(new Runnable() {
-
 			@Override
 			public void run() {
 				Runnable updater = new Runnable() {
 
 					@Override
 					public void run() {
-						if(cc.checkCollision(sys, astresImages)) {
-							// A FAIRE afficherCollision();
-						};
+						cc.checkCollision(sys, astresImages);
+						//Faire fonction aficherCollision
 						refresh(sys);
-						temps.setText((Double.parseDouble(temps.getText()) + sys.getdT() + ""));
+						
+						double t = Double.parseDouble(temps.getText()) + sys.getdT();
+						BigDecimal bd = new BigDecimal(t);
+						bd= bd.setScale(2,BigDecimal.ROUND_DOWN);
+						temps.setText(bd.doubleValue()+"");
 						if (v != null) {
 							positionX.setText("X = " + Math.round(v.getPosx()));
 							positionY.setText("Y = " + Math.round(v.getPosy()));
@@ -299,7 +299,14 @@ public class Interface extends Application {
 		canvas.heightProperty().bind(cage.heightProperty());
 		trace.widthProperty().bind(cage.widthProperty());
 		trace.heightProperty().bind(cage.heightProperty());
-
+		trace.getGraphicsContext2D().setFill(Color.WHITE);
+		
+		BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage,
+		BackgroundRepeat.REPEAT,BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+		
+		
+		cage.setBackground(new Background(etoileImageBackground));
+		
 		canvas.setOnScroll(e -> {
 			// scale += (e.getDeltaY()/1000);
 
