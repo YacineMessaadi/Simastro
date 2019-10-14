@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -352,6 +354,17 @@ public class Interface extends Application {
 	public Pane generateCanvas(Sauvegarde sauvegarde) {
 		Systeme sys = sauvegarde.charger();
 		return generateCanvas(sys);
+	}
+	
+	/**
+	 * Genère une erreur si un fichier n'a pas pu être chargé
+	 */
+	public void generateError() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error Dialog");
+		alert.setHeaderText("Erreur !");
+		alert.setContentText("Ooops, un fichier n'a pas pu être chargé!");
+		alert.showAndWait();
 	}
 
 }
