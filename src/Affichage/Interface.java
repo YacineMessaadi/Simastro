@@ -51,6 +51,7 @@ public class Interface extends Application {
 	Image soleil = new Image("file:resources/soleil.png");
 	Image planete = new Image("file:resources/planete.png");
 	Image vaisseau = new Image("file:resources/vaisseau.png");
+	Image collision = new Image("file:resources/planete.png");
 	VaisseauControler vc = new VaisseauControler();
 	CollisionController cc = new CollisionController();
 	Canvas canvas = new Canvas(500, 500);
