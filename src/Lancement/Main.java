@@ -17,8 +17,13 @@ public class Main extends Application {
     static Systeme s;
     static Sauvegarde sa;
     public static void main(String[] args) {
-    	sa = new Sauvegarde(new File(args[0]));
-        launch(args);
+        if(args.length!=0) {
+            sa = new Sauvegarde(new File(args[0]));
+            launch(args);
+        } else {
+            sa = new Sauvegarde(new File("save/42_Test.astro"));
+            launch(args);
+        }
     }
 
     @Override

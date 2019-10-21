@@ -1,5 +1,6 @@
 package Affichage;
 
+import Modele.Objets.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -29,15 +30,12 @@ import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Observable;
 
 import Lancement.CollisionController;
 import Lancement.VaisseauControler;
 import Modele.Sauvegarde;
-import Modele.Objets.Objet;
-import Modele.Objets.Soleil;
-import Modele.Objets.Systeme;
-import Modele.Objets.Vaisseau;
 
 public class Interface extends Application {
 	/**
@@ -59,7 +57,6 @@ public class Interface extends Application {
 	VaisseauControler vc = new VaisseauControler();
 	CollisionController cc = new CollisionController();
 	Canvas canvas = new Canvas(500, 500);
-	Canvas trace = new Canvas(500, 500);
 	Image etoileImage = new Image("file:resources/espace.jpg");
 	double axeX;
 	double axeY;
@@ -72,9 +69,12 @@ public class Interface extends Application {
 
 	private double xStart = 0;
 	private double yStart = 0;
-	// Sert à savoir si l'affichage suit actuellement un objet, pour desactiver le deplacement par exemple
 
+	// Sert à savoir si l'affichage suit actuellement un objet, pour desactiver le deplacement par exemple
 	private boolean following = false;
+
+	// Permet de generer et sauvegarder la trainée des planetes
+    private List trail;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -259,9 +259,6 @@ public class Interface extends Application {
 				graphicsContext.setFill(Color.BLUE);
 				graphicsContext.fillText("Vaisseau", (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
-				trace.getGraphicsContext2D().fillRect((o.getPosx() + moitieX + axeX) * scale,
-						(o.getPosy() + moitieY + axeY) * scale, 1, 1);
-				
 			} else {
 				graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
@@ -269,9 +266,20 @@ public class Interface extends Application {
 				graphicsContext.setFill(Color.GREEN);
 				graphicsContext.fillText("Planète", (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
-				trace.getGraphicsContext2D().fillRect((o.getPosx() + moitieX + axeX) * scale,
-						(o.getPosy() + moitieY + axeY) * scale, 1, 1);
-			}
+			} if(o instanceof Simule){
+			    if(((Simule) o).getTrail().size()>=((Simule) o).getListSize()){
+			        ((Simule) o).getTrail().poll();
+			        ((Simule) o).getTrail().add(new Position(o.getPosx(),o.getPosy()));
+                } else {
+                    ((Simule) o).getTrail().add(new Position(o.getPosx(),o.getPosy()));
+                }
+                graphicsContext.beginPath();
+                graphicsContext.moveTo((((Simule) o).getTrail().peek().getX() + moitieX + axeX) * scale,(((Simule) o).getTrail().peek().getY()+ moitieY + axeY) * scale);
+			    for(Position position:((Simule) o).getTrail()){
+                    graphicsContext.lineTo(((position.getX() +moitieX + axeX )* scale ),(position.getY() +moitieY + axeY) * scale);
+                }
+			    graphicsContext.stroke();
+            }
 			Circle c = new Circle((o.getPosx() + moitieX + axeX) * scale, (o.getPosy() + moitieY + axeY) * scale,
 					(o.getMasse()) * scale / 2);
 			astresImages.put(o, c);
@@ -287,22 +295,13 @@ public class Interface extends Application {
 	public Pane generateCanvas(Systeme s) {
 		Pane cage = new Pane();
 		cage.getChildren().add(canvas);
-		cage.getChildren().add(trace);
-		trace.setMouseTransparent(true);
 		canvas.minHeight(0);
 		canvas.minWidth(0);
 		canvas.prefHeight(500);
 		canvas.prefWidth(500);
-		trace.minHeight(0);
-		trace.minWidth(0);
-		trace.prefHeight(500);
-		trace.prefWidth(500);
 		refresh(s);
 		canvas.widthProperty().bind(cage.widthProperty());
 		canvas.heightProperty().bind(cage.heightProperty());
-		trace.widthProperty().bind(cage.widthProperty());
-		trace.heightProperty().bind(cage.heightProperty());
-		trace.getGraphicsContext2D().setFill(Color.BLACK);
 		
 		//BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage,
 		//BackgroundRepeat.REPEAT,BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
@@ -317,7 +316,6 @@ public class Interface extends Application {
 				scale *= 1.1;
 			else if (e.getDeltaY() < 0)
 				scale *= 0.9;
-			trace.getGraphicsContext2D().clearRect(0, 0, trace.getWidth(), trace.getHeight());
 			refresh(s);
 			e.consume();
 		});
@@ -334,7 +332,6 @@ public class Interface extends Application {
 			axeX -= ((xStart - event.getSceneX())) / scale;
 			axeY -= ((yStart - event.getSceneY())) / scale;
 			System.out.println("axeX:" + axeX + "axeY:" + axeY);
-			trace.getGraphicsContext2D().clearRect(0, 0, trace.getWidth(), trace.getHeight());
 			refresh(s);
 			xStart = event.getSceneX();
 			yStart = event.getSceneY();

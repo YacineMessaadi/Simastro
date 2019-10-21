@@ -1,14 +1,23 @@
 package Modele.Objets;
 
+import javafx.geometry.Pos;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class Simule extends Objet {
 
 	private double vitx;
 	private double vity;
+	private LinkedList<Position> trail;
+	private int listSize;
 	
 	public Simule(double m, double px, double py, double vx, double vy){
 		super(m, px, py);
 		vitx = vx;
-		vity = vy;	
+		vity = vy;
+		trail = new LinkedList<Position>();
+		listSize = 100;
 	}
 	
 	
@@ -28,5 +37,7 @@ public class Simule extends Objet {
 		this.vity = vity;
 	}
 
+	public int getListSize(){ return listSize;}
 
+	public LinkedList<Position> getTrail(){return trail;}
 }
