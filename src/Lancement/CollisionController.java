@@ -29,8 +29,14 @@ public class CollisionController {
 			for (Objet o1 : s.getSatellites()) {
 				if (o != o1 && Shape.intersect(hm.get(o), hm.get(o1)).getBoundsInLocal().getWidth() != -1) {
 					if (o.getMasse() < o1.getMasse()) {
+						o1.setMasse(o1.getMasse()-o.getMasse());
 						s.deleteAstre(o);
-					} else {
+					} else if(o.getMasse()==o1.getMasse()){
+						s.deleteAstre(o1);
+						s.deleteAstre(o);
+					}
+					else {
+						o.setMasse(o.getMasse()-o1.getMasse());
 						s.deleteAstre(o1);
 					}
 					return true;
