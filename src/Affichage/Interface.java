@@ -239,7 +239,7 @@ public class Interface extends Application {
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
 						(o.getMasse()) * scale);
 				graphicsContext.setFill(Color.BLUE);
-				graphicsContext.fillText("Soleil", (o.getPosx() + moitieX + axeX) * scale,
+				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
 			} else if (o instanceof Vaisseau) {
 				
@@ -257,14 +257,14 @@ public class Interface extends Application {
 						(o.getMasse()*2000) * scale);
 
 				graphicsContext.setFill(Color.BLUE);
-				graphicsContext.fillText("Vaisseau", (o.getPosx() + moitieX + axeX) * scale,
+				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
 			} else {
 				graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
 						(o.getMasse()) * scale);
 				graphicsContext.setFill(Color.GREEN);
-				graphicsContext.fillText("Planète", (o.getPosx() + moitieX + axeX) * scale,
+				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
 			} if(o instanceof Simule){
 			    if(((Simule) o).getTrail().size()>=((Simule) o).getListSize()){

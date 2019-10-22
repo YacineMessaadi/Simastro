@@ -25,7 +25,7 @@ public class Ellipse extends Objet {
 	 * @param fixe2
 	 */
 	public Ellipse(double m, double px, double py, double vx, double vy, Fixe fixe1, Fixe fixe2){
-		super(m, px, py);
+		super("Elipse",m, px, py);
 		vitx = vx;
 		vity = vy;
 		f1 = fixe1;

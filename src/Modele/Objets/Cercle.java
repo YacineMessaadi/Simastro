@@ -11,7 +11,7 @@ public class Cercle extends Simule {
 	private Objet centre;
 
 	public Cercle(double m, double px, double py, Objet fo1, double vx, double vy) {
-		super(m, px, py,vx,vy);
+		super("Circle",m, px, py,vx,vy);
 		centre = fo1;
 		}
 

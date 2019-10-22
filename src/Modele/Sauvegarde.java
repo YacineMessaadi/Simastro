@@ -93,6 +93,7 @@ public class Sauvegarde {
 	public static Soleil chargerSoleil(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
 		String valeur2[] = new String[valeur.length-2];
+		String nom = valeur[0].split(":")[0];
 		for (int i = 2; i < valeur.length; i++) {
 			valeur2[i - 2] = valeur[i].split("=")[1];
 		}
@@ -114,14 +115,16 @@ public class Sauvegarde {
 		double py = Double.parseDouble(nbr[2]) * Math.pow(10, Double.parseDouble(pow[2]));
 
 		System.out.println("Soleil trouvé !");
-		return new Soleil(m, px, py);
+		return new Soleil(nom,m, px, py);
 	}
 
 	public static Simule chargerSimule(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
 		String valeur2[] = new String[valeur.length-2];
-		for (int i = 2; i < valeur.length; i++)
+		String nom = valeur[0].split(":")[0];
+		for (int i = 2; i < valeur.length; i++) {
 			valeur2[i - 2] = valeur[i].split("=")[1];
+		}
 		String pow[] = new String[valeur2.length];
 		String nbr[] = new String[valeur2.length];
 		for (int i = 0; i < valeur2.length; i++) {
@@ -142,7 +145,7 @@ public class Sauvegarde {
 		double vy = Double.parseDouble(nbr[4]) * Math.pow(10, Double.parseDouble(pow[4]));
 
 		System.out.println("Simulé trouvé !");
-		return new Simule(m, px, py, vx, vy);
+		return new Simule(nom,m, px, py, vx, vy);
 	}
 
 	/**
@@ -154,10 +157,12 @@ public class Sauvegarde {
 	public static Fixe chargerFixe(String thisLine) throws FileNotFoundException {
 		String valeur[] = thisLine.split(" ");
 		String valeur2[] = new String[valeur.length];
-		for (int i = 2; i < valeur.length; i++)
+		String nom = valeur[0].split(":")[0];
+		for (int i = 2; i < valeur.length; i++){
 			valeur2[i - 2] = valeur[i].split("=")[1];
+		}
 		System.out.println("Fixe trouvé !");
-		return new Fixe(Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]), Double.parseDouble(valeur2[2]));
+		return new Fixe(nom,Double.parseDouble(valeur2[0]), Double.parseDouble(valeur2[1]), Double.parseDouble(valeur2[2]));
 	}
 
 }

@@ -15,7 +15,7 @@ public class Soleil extends Fixe {
 	 * @param px
 	 * @param py
 	 */
-    public Soleil(double m, double px, double py) {
-        super(m, px, py);
+    public Soleil(String nom,double m, double px, double py) {
+        super(nom,m, px, py);
     }
 }

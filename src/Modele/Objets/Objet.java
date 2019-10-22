@@ -6,7 +6,7 @@ package Modele.Objets;
  *
  */
 public abstract class Objet{
-
+	private String nom;
 	private double masse;
 	private double posx;
 	private double posy;
@@ -18,7 +18,8 @@ public abstract class Objet{
 	 * @param px
 	 * @param py
 	 */
-	public Objet(double m, double px, double py) {
+	public Objet(String nom, double m, double px, double py) {
+		this.nom = nom;
 		masse = m;
 		posx = px;
 		posy = py;
@@ -78,5 +79,6 @@ public abstract class Objet{
 		this.posy = posy;
 	}
 
+	public String getNom(){return  nom;}
 
 }

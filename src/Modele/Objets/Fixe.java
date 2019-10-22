@@ -16,8 +16,8 @@ public class Fixe extends Objet {
 	 * @param py
 	 */
 
-	public Fixe(double m, double px, double py) {
-		super(m, px, py);
+	public Fixe(String nom,double m, double px, double py) {
+		super(nom,m, px, py);
 	}
 
 }

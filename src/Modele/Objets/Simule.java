@@ -12,8 +12,8 @@ public class Simule extends Objet {
 	private LinkedList<Position> trail;
 	private int listSize;
 	
-	public Simule(double m, double px, double py, double vx, double vy){
-		super(m, px, py);
+	public Simule(String nom,double m, double px, double py, double vx, double vy){
+		super(nom,m, px, py);
 		vitx = vx;
 		vity = vy;
 		trail = new LinkedList<Position>();
