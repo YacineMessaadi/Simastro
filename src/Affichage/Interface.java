@@ -1,9 +1,6 @@
 package Affichage;
 
 import Modele.Objets.*;
-import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.skins.IndicatorSkin;
-import eu.hansolo.medusa.skins.SlimSkin;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -12,13 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -31,6 +23,7 @@ import javafx.stage.Stage;
 
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +32,7 @@ import java.util.Observable;
 import Lancement.CollisionController;
 import Lancement.VaisseauControler;
 import Modele.Sauvegarde;
+import javafx.util.Callback;
 
 public class Interface extends Application {
 	/**
@@ -74,28 +68,14 @@ public class Interface extends Application {
 	private double yStart = 0;
 
 	// Sert à savoir si l'affichage suit actuellement un objet, pour desactiver le deplacement par exemple
-	private boolean following = false;
+	Fixe libre = new Fixe("Libre",0,0,0);
+	ComboBox<Objet> boxSuivre;
 
 	// Permet de generer et sauvegarder la trainée des planetes
     private List trail;
 
 	@Override
 	public void start(Stage stage) throws Exception {
-			  
-	    Gauge gauge = new Gauge();  
-	    gauge.setSkin(new SlimSkin(gauge));  
-	    gauge.setTitle("Carburant");  
-	    gauge.setUnit("unité");  
-	    gauge.setDecimals(0);  
-	    gauge.setValueColor(Color.RED);  
-	    gauge.setTitleColor(Color.BLACK);  
-	    gauge.setSubTitleColor(Color.BLACK);  
-	    gauge.setBarColor(Color.rgb(0, 214, 215));  
-	    gauge.setNeedleColor(Color.RED);  
-	    gauge.setThresholdColor(Color.rgb(204, 0, 0));  
-	    gauge.setTickLabelColor(Color.rgb(151, 151, 151));  
-	    gauge.setTickMarkColor(Color.RED);  
-	    
 		final FileChooser fileChooser = new FileChooser();
 
 		VBox tableauBordGauche = new VBox();
@@ -134,7 +114,23 @@ public class Interface extends Application {
 		Label position = new Label("Position du vaisseau ...");
 		Label positionX = new Label("X = " + 0);
 		Label positionY = new Label("Y = " + 0);
-		tableauBordGauche.getChildren().addAll(position, positionX, positionY, gauge);
+		boxSuivre = new ComboBox<>();
+		boxSuivre.setCellFactory(new Callback<ListView<Objet>, ListCell<Objet>>() {
+
+			@Override
+			public ListCell<Objet> call(ListView<Objet> listView) {
+				return new SimpleObjetListCell();
+			}
+		});
+		boxSuivre.getItems().add(libre);
+		boxSuivre.setValue(libre);
+		for(Objet s:sys.getSatellites()){
+			if(s instanceof Simule){
+				boxSuivre.getItems().add((Simule) s);
+				boxSuivre.setButtonCell(new SimpleObjetListCell());
+			}
+		}
+		tableauBordGauche.getChildren().addAll(position, positionX, positionY, boxSuivre);
 
 		Label autre = new Label("Timer :");
 		Label temps = new Label("0");
@@ -153,10 +149,11 @@ public class Interface extends Application {
 		EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-
+				System.out.println(event.getCode());
 				if (v != null) {
-					if (event.getCode() == KeyCode.UP)
+					if (event.getCode() == KeyCode.UP) {
 						vc.principaleArriere(v);
+					}
 					else if (event.getCode() == KeyCode.DOWN)
 						vc.principaleAvant(v);
 					else if (event.getCode() == KeyCode.LEFT)
@@ -164,7 +161,7 @@ public class Interface extends Application {
 					else if (event.getCode() == KeyCode.RIGHT)
 						vc.retroFuseeGauche(v);
 				} else if (event.getCode() == KeyCode.SPACE) {
-					// your code for shooting the missile
+					// PIOU PIOU le missile
 				}
 				event.consume();
 			}
@@ -221,8 +218,8 @@ public class Interface extends Application {
 		thread.start();
 
 		Scene scene = new Scene(root, 900, 700);
-		scene.setOnKeyPressed(keyListener);
 		stage.setScene(scene);
+		scene.setOnKeyPressed(keyListener);
 		stage.setTitle("Simastro");
 		stage.setFullScreen(true);
 		stage.show();
@@ -243,6 +240,10 @@ public class Interface extends Application {
 	// [l'axeX et Y qui correspondent au décallage dû au déplacement à l'aide de la souris] et [le Scale]
 
 	public void refresh(Systeme s) {
+		if(boxSuivre.getValue() != libre){
+			axeX = -boxSuivre.getValue().getPosx();
+			axeY = -boxSuivre.getValue().getPosy();
+		}
 		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		ArrayList<Objet> listObjet = s.getSatellites();
 		GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
@@ -383,4 +384,20 @@ public class Interface extends Application {
 		alert.setContentText("Ooops, un fichier n'a pas pu être chargé!");
 		alert.showAndWait();
 	}
+
+	public class SimpleObjetListCell extends ListCell<Objet> {
+
+		@Override
+		protected void updateItem(Objet item, boolean empty) {
+			super.updateItem(item, empty);
+			DecimalFormat f = new DecimalFormat();
+			f.setMaximumFractionDigits(3);
+			setText(null);
+			if (!empty && item != null) {
+				final String text = String.format("%s : %s - %s", item.getNom(), f.format(item.getPosx()),f.format(item.getPosy()));
+				setText(text);
+			}
+		}
+	}
+
 }
