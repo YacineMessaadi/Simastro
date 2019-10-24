@@ -1,6 +1,9 @@
 package Affichage;
 
 import Modele.Objets.*;
+import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.skins.IndicatorSkin;
+import eu.hansolo.medusa.skins.SlimSkin;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -78,6 +81,21 @@ public class Interface extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+			  
+	    Gauge gauge = new Gauge();  
+	    gauge.setSkin(new SlimSkin(gauge));  
+	    gauge.setTitle("Carburant");  
+	    gauge.setUnit("unité");  
+	    gauge.setDecimals(0);  
+	    gauge.setValueColor(Color.RED);  
+	    gauge.setTitleColor(Color.BLACK);  
+	    gauge.setSubTitleColor(Color.BLACK);  
+	    gauge.setBarColor(Color.rgb(0, 214, 215));  
+	    gauge.setNeedleColor(Color.RED);  
+	    gauge.setThresholdColor(Color.rgb(204, 0, 0));  
+	    gauge.setTickLabelColor(Color.rgb(151, 151, 151));  
+	    gauge.setTickMarkColor(Color.RED);  
+	    
 		final FileChooser fileChooser = new FileChooser();
 
 		VBox tableauBordGauche = new VBox();
@@ -116,7 +134,7 @@ public class Interface extends Application {
 		Label position = new Label("Position du vaisseau ...");
 		Label positionX = new Label("X = " + 0);
 		Label positionY = new Label("Y = " + 0);
-		tableauBordGauche.getChildren().addAll(position, positionX, positionY);
+		tableauBordGauche.getChildren().addAll(position, positionX, positionY, gauge);
 
 		Label autre = new Label("Timer :");
 		Label temps = new Label("0");
