@@ -16,6 +16,7 @@ public class Main extends Application {
     static ThreadTrajectoire tt;
     static Systeme s;
     static Sauvegarde sa;
+    
     public static void main(String[] args) {
         if(args.length!=0) {
             sa = new Sauvegarde(new File(args[0]));

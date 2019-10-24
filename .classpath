@@ -6,6 +6,5 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/infoetu/lantoing/git/projet_modelisation/resources/Medusa-8.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
