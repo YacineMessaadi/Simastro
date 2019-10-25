@@ -70,6 +70,12 @@ public class Systeme extends Observable {
 		return fA;
 	}
 
+	public double setfA(double value) {
+		double temp = fA;
+		fA = value;
+		return temp;
+	}
+
 	public double getdT() {
 		return dT;
 	}
