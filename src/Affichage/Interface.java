@@ -57,6 +57,7 @@ public class Interface extends Application {
     CollisionController cc = new CollisionController();
     Canvas canvas = new Canvas(500, 500);
     Image etoileImage = new Image("file:resources/espace.jpg");
+    Image tableauBordImage = new Image("file:resources/tableaubord.png");
     double axeX;
     double axeY;
 
@@ -115,7 +116,6 @@ public class Interface extends Application {
         VBox tableauBordGauche = new VBox();
         tableauBordGauche.setStyle("-fx-background-color: #e6e6e6;");
         VBox tableauBordDroite = new VBox();
-        tableauBordDroite.setStyle("-fx-background-color: #e6e6e6;");
         HBox hbox = new HBox();
         hbox.setStyle("-fx-background-color: white;");
         hbox.setAlignment(Pos.CENTER);
@@ -166,11 +166,26 @@ public class Interface extends Application {
         }
         tableauBordGauche.getChildren().addAll(position, positionX, positionY, boxSuivre, areaSaut, buttonSaut);
 
-        Label autre = new Label("Timer :");
+       
+        
+        Label timer = new Label("Timer :");
+        timer.setStyle("-fx-text-fill:white;");
         Label temps = new Label("0");
-
-        tableauBordDroite.getChildren().addAll(autre, temps);
+        temps.setStyle("-fx-text-fill:white;");
+   
+        VBox time = new VBox();
+        time.setAlignment(Pos.CENTER);
+        time.setStyle("-fx-background-color:darkblue;");
+        time.setMinHeight(43);
+        time.setMaxWidth(65);
+        time.setTranslateX(-80);
+        time.setTranslateY(-85);
+        time.getChildren().addAll(timer,temps);
+        
+        tableauBordDroite.setBackground(new Background(new BackgroundImage(tableauBordImage,BackgroundRepeat.REPEAT,BackgroundRepeat.REPEAT,BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        tableauBordDroite.getChildren().add(time);
         tableauBordDroite.setAlignment(Pos.CENTER);
+        
         Button quitter = new Button("Quitter");
         quitter.setOnAction(e -> {
             stage.close();
@@ -208,7 +223,7 @@ public class Interface extends Application {
         root.setBottom(hbox);
 
         tableauBordGauche.setPrefWidth(150);
-        tableauBordDroite.setPrefWidth(150);
+        tableauBordDroite.setPrefWidth(250);
 
 
         // root.setBackground(new Background(new BackgroundFill(Color.rgb(40, 40, 40),
@@ -354,11 +369,11 @@ public class Interface extends Application {
         canvas.widthProperty().bind(cage.widthProperty());
         canvas.heightProperty().bind(cage.heightProperty());
 
-        //BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage,
-        //BackgroundRepeat.REPEAT,BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage,
+        BackgroundRepeat.REPEAT,BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
 
 
-        //cage.setBackground(new Background(etoileImageBackground));
+        cage.setBackground(new Background(etoileImageBackground));
 
         canvas.setOnScroll(e -> {
             // scale += (e.getDeltaY()/1000);
