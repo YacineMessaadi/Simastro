@@ -17,7 +17,7 @@ public class Simule extends Objet {
 		vitx = vx;
 		vity = vy;
 		trail = new LinkedList<Position>();
-		listSize = 100;
+		listSize = 100000;
 	}
 	
 	

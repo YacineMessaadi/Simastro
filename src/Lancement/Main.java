@@ -31,11 +31,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
     	s = sa.charger();
     	tt = new ThreadTrajectoire(s);
+    	
     	inter = new Interface();
     	inter.sys = s;
         try {
         	inter.start(primaryStage);
-            new Thread(tt).start();
+            tt.calculTrajectoire();
         } catch (Exception e){
             e.printStackTrace();
         }

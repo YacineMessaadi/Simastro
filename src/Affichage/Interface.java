@@ -240,7 +240,7 @@ public class Interface extends Application {
                         //Faire fonction aficherCollision
                         refresh(sys);
 
-                        double t = Double.parseDouble(temps.getText()) + sys.getdT();
+                        double t = Double.parseDouble(temps.getText()) + sys.getdT() * sys.getfA();
                         BigDecimal bd = new BigDecimal(t);
                         bd = bd.setScale(2, BigDecimal.ROUND_DOWN);
                         temps.setText(bd.doubleValue() + "");
@@ -334,6 +334,7 @@ public class Interface extends Application {
                     ((Simule) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
                 }
                 graphicsContext.beginPath();
+                graphicsContext.setStroke(Color.WHITE);
                 graphicsContext.moveTo((((Simule) o).getTrail().peek().getX() + moitieX + axeX) * scale, (((Simule) o).getTrail().peek().getY() + moitieY + axeY) * scale);
                 for (Position position : ((Simule) o).getTrail()) {
                     graphicsContext.lineTo(((position.getX() + moitieX + axeX) * scale), (position.getY() + moitieY + axeY) * scale);
