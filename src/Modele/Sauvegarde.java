@@ -14,14 +14,14 @@ import Modele.Objets.Vaisseau;
  *
  */
 public class Sauvegarde {
-	private File file;
+	private InputStreamReader file;
 
 	/**
 	 * Sauvegarde Constructeur d'un objet Sauvegarde
 	 * 
 	 * @param file
 	 */
-	public Sauvegarde(File file) {
+	public Sauvegarde(InputStreamReader file) {
 		this.file = file;
 	}
 
@@ -31,13 +31,10 @@ public class Sauvegarde {
 	 * @return Systeme;
 	 */
 	public Systeme charger() {
-		File astroFile = file;
-		System.out.print("Le fichier " + astroFile.getName() + " à été chargé.");
+		InputStreamReader astroFile = file;
+		System.out.print("Le fichier a été chargé.");
 		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(astroFile));
-		} catch (FileNotFoundException e) {
-		}
+		br = new BufferedReader(astroFile);
 		Systeme sys = null;
 		try {
 			String thisLine;
@@ -57,8 +54,9 @@ public class Sauvegarde {
 				else if (!thisLine.startsWith("#")) {
 					if (thisLine.contains("Vaisseau"))
 						sys.addListAstres(chargerVaisseau(thisLine));
-					else if (thisLine.contains("Simulé"))
+					else if (thisLine.contains("Simule") || thisLine.contains("Simulé")) {
 						sys.addListAstres(chargerSimule(thisLine));
+					}
 					else if (thisLine.contains("Fixe"))
 						sys.addListAstres(chargerFixe(thisLine));
 				}

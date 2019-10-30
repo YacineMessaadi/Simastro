@@ -3,6 +3,7 @@ package Affichage;
 import Modele.Objets.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -23,12 +24,16 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
+
+import javax.imageio.ImageIO;
 
 import Lancement.CollisionController;
 import Lancement.VaisseauControler;
@@ -52,14 +57,14 @@ public class Interface extends Application {
 	 */
 	BorderPane root = new BorderPane();
 	public Systeme sys;
-	Image soleil = new Image("file:resources/soleil.png");
-	Image planete = new Image("file:resources/planete.png");
-	Image vaisseau = new Image("file:resources/vaisseau.png");
+	Image soleil;
+	Image planete;
+	Image vaisseau;
 	VaisseauControler vc = new VaisseauControler();
 	CollisionController cc = new CollisionController();
 	Canvas canvas = new Canvas(500, 500);
-	Image etoileImage = new Image("file:resources/espace.jpg");
-	Image tableauBordImage = new Image("file:resources/tableaubord.png");
+	Image etoileImage;
+	Image tableauBordImage;
 	double axeX;
 	double axeY;
 
@@ -88,6 +93,14 @@ public class Interface extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		soleil = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/soleil.png")), null);
+		vaisseau = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/vaisseau.png")), null);
+		etoileImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/espace.jpg")), null);
+		tableauBordImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/tableaubord.png")), null);
+		planete = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/planete.gif")), null);
+		
+		
 		final FileChooser fileChooser = new FileChooser();
 		areaSaut.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			try {

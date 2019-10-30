@@ -1,10 +1,11 @@
 package Lancement;
 
-import java.io.File;
+import java.io.InputStreamReader;
 
-import Affichage.Interface;
+import Lancement.ThreadTrajectoire;
 import Modele.Sauvegarde;
 import Modele.Objets.Systeme;
+import Affichage.Interface;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -19,10 +20,12 @@ public class Main extends Application {
     
     public static void main(String[] args) {
         if(args.length!=0) {
-            sa = new Sauvegarde(new File(args[0]));
+        	System.out.println(Main.class.getClassLoader().getResourceAsStream("/save/" + args[0]));
+        	InputStreamReader file = new InputStreamReader(Main.class.getResourceAsStream("/save/" + args[0]));
+            sa = new Sauvegarde(file);
             launch(args);
         } else {
-            sa = new Sauvegarde(new File("save/42_Test.astro"));
+            sa = new Sauvegarde(new InputStreamReader(Main.class.getResourceAsStream("/save/04_ExempleDuSujet.astro")));
             launch(args);
         }
     }
@@ -30,6 +33,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
     	s = sa.charger();
+    	System.out.println(s.getfA());
     	tt = new ThreadTrajectoire(s);
     	
     	inter = new Interface();
