@@ -36,6 +36,7 @@ import java.util.Observable;
 import javax.imageio.ImageIO;
 
 import Lancement.CollisionController;
+import Lancement.PauseController;
 import Lancement.VaisseauControler;
 import Modele.Sauvegarde;
 import javafx.util.Callback;
@@ -62,6 +63,7 @@ public class Interface extends Application {
 	Image vaisseau;
 	VaisseauControler vc = new VaisseauControler();
 	CollisionController cc = new CollisionController();
+	PauseController pc = new PauseController();
 	Canvas canvas = new Canvas(500, 500);
 	Image etoileImage;
 	Image tableauBordImage;
@@ -98,7 +100,7 @@ public class Interface extends Application {
 		vaisseau = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/vaisseau.png")), null);
 		etoileImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/espace.jpg")), null);
 		tableauBordImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/tableaubord.png")), null);
-		planete = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/planete.gif")), null);
+		planete = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/planete.png")), null);
 		
 		
 		final FileChooser fileChooser = new FileChooser();
@@ -206,7 +208,13 @@ public class Interface extends Application {
 			stage.close();
 			System.exit(0);
 		});
-		hbox.getChildren().add(quitter);
+		
+		Button pause = new Button("Pause/Lecture");
+		pause.setOnAction(e -> {
+			pc.setPause(sys);
+		});
+		
+		hbox.getChildren().addAll(quitter, pause);
 
 		Vaisseau v = sys.getVaisseau();
 
@@ -254,13 +262,17 @@ public class Interface extends Application {
 						// Faire fonction aficherCollision
 						refresh(sys);
 
-						double t = Double.parseDouble(temps.getText()) + sys.getdT() * sys.getfA();
-						BigDecimal bd = new BigDecimal(t);
-						bd = bd.setScale(2, BigDecimal.ROUND_DOWN);
-						temps.setText(bd.doubleValue() + "");
+						if(sys.getRunning()) {
+							double t = Double.parseDouble(temps.getText()) + sys.getdT() * sys.getfA();
+							BigDecimal bd = new BigDecimal(t);
+							bd = bd.setScale(2, BigDecimal.ROUND_DOWN);
+							temps.setText(bd.doubleValue() + "");
+						}
+						
 						if (v != null) {
 							positionX.setText("X = " + Math.round(v.getPosx()));
 							positionY.setText("Y = " + Math.round(v.getPosy()));
+							
 						}
 
 					}

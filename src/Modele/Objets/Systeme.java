@@ -14,6 +14,8 @@ public class Systeme extends Observable {
 	private double gravite;
 	private double fA;
 	private double dT;
+	
+	private boolean running = true;
 
 	private double rayon;
 	private ArrayList<Objet> listAstre = new ArrayList<Objet>();
@@ -99,4 +101,13 @@ public class Systeme extends Observable {
 	public double getRayon() {
 		return rayon;
 	}
+	
+	public boolean getRunning() {
+		return running;
+	}
+	
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+	
 }

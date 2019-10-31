@@ -8,15 +8,13 @@ import javafx.application.Platform;
 
 public class ThreadTrajectoire {
 
-	private static final int FPS = 30;
+	private static final int FPS = 60;
 	public static double dt;
 	public static double G;
-	public static double fa; 
-	
+	public static double fa;
+
 	private Systeme s;
 	private Thread renderThread;
-
-	private boolean isRunning = false;
 	private double rayon;
 
 	private Timer timer;
@@ -29,12 +27,12 @@ public class ThreadTrajectoire {
 			@Override
 			public void run() {
 				timer.init();
-				while(true) {
+				while (true) {
 					tempsEcoule = timer.getEllapsedTime();
 					cpt += tempsEcoule;
 
-					while (isRunning && cpt >= dt) {
-						
+					while (s.getRunning() && cpt >= dt) {
+
 						Platform.runLater(new Runnable() {
 							@Override
 							public void run() {
@@ -48,7 +46,8 @@ public class ThreadTrajectoire {
 												double distY = o1.getPosy() - o.getPosy();
 												double distance = Math.sqrt(distX * distX + distY * distY);
 												double angle = Math.atan2(distY, distX);
-												double force = s.getGravite() * ((o.getMasse() * o1.getMasse()) / (distance * distance));
+												double force = s.getGravite()
+														* ((o.getMasse() * o1.getMasse()) / (distance * distance));
 												xTotal += (Math.cos(angle) * force);
 												yTotal += (Math.sin(angle) * force);
 
@@ -70,7 +69,7 @@ public class ThreadTrajectoire {
 								}
 							}
 						});
-						cpt -= dt/fa;
+						cpt -= dt / fa;
 					}
 
 					threadSleep();
@@ -85,7 +84,6 @@ public class ThreadTrajectoire {
 	public ThreadTrajectoire(Systeme space) {
 		this.s = space;
 		this.timer = new Timer();
-		isRunning = true;
 		rayon = s.getRayon();
 		ThreadTrajectoire.dt = s.getdT();
 		ThreadTrajectoire.fa = s.getfA();
@@ -97,7 +95,7 @@ public class ThreadTrajectoire {
 	}
 
 	public void threadSleep() {
-		double endTime = timer.getLastLoopTime() + 1f/FPS;
+		double endTime = timer.getLastLoopTime() + 1f / FPS;
 		while (timer.getTime() < endTime) {
 			try {
 				Thread.sleep(1);
@@ -105,10 +103,6 @@ public class ThreadTrajectoire {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	public boolean isRunning() {
-		return isRunning;
 	}
 
 	public void setRayon(int rayon) {
@@ -118,7 +112,5 @@ public class ThreadTrajectoire {
 	public double getRayon() {
 		return rayon;
 	}
-
-
 
 }

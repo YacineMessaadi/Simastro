@@ -1,7 +1,7 @@
 package Lancement;
 
 public class Timer {
-
+	
     private double lastLoopTime;
     
     public void init() {
