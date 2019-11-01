@@ -248,10 +248,9 @@ public class Interface extends Application {
 			@Override
 			public void handle(KeyEvent event) {
 				System.out.println(event.getCode());
-				if (v != null) {
-					if (event.getCode() == KeyCode.UP && gauge.getValue() != 0) {
+				if (sys.getVaisseau()!=null && gauge.getValue() != 0) {
+					if (event.getCode() == KeyCode.UP) {
 						vc.principaleArriere(v);
-						if(gauge.getValue()>0) gauge.setValue(gauge.getValue()-1);
 					} else if (event.getCode() == KeyCode.DOWN)
 						vc.principaleAvant(v);
 					else if (event.getCode() == KeyCode.LEFT)
@@ -260,6 +259,7 @@ public class Interface extends Application {
 						vc.retroFuseeGauche(v);
 					else if (event.getCode() == KeyCode.R)
 						if(gauge.getValue()<100) gauge.setValue(gauge.getValue()+1);
+					gauge.setValue(gauge.getValue()-0.5);
 				} else if (event.getCode() == KeyCode.SPACE) {
 					// PIOU PIOU le missile
 				}
@@ -288,7 +288,6 @@ public class Interface extends Application {
 					@Override
 					public void run() {
 						cc.checkCollision(sys, astresImages);
-						// Faire fonction aficherCollision
 						refresh(sys);
 
 						if(sys.getRunning()) {
@@ -328,12 +327,6 @@ public class Interface extends Application {
 		stage.show();
 	}
 
-	public void update(Observable o, Object arg1) {
-		if (o instanceof Systeme) {
-			System.out.println("Update");
-			refresh(sys);
-		}
-	}
 
 	// La fonction refresh va nettoyer le canvas et le remplir à l'aide de toutes
 	// les coordonées des astres à l'instant où il est appelé,

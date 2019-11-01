@@ -9,6 +9,6 @@
 			<accessrule kind="accessible" pattern="javafx/**"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry kind="lib" path="resources/Medusa-8.0.jar"/>
+	<classpathentry kind="lib" path="src/resources/Medusa-8.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
