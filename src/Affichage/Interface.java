@@ -1,6 +1,11 @@
 package Affichage;
 
 import Modele.Objets.*;
+import eu.hansolo.medusa.Gauge;
+import eu.hansolo.medusa.Gauge.ScaleDirection;
+import eu.hansolo.medusa.TickLabelOrientation;
+import eu.hansolo.medusa.skins.IndicatorSkin;
+import eu.hansolo.medusa.skins.ModernSkin;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -130,6 +135,27 @@ public class Interface extends Application {
 				sys.setfA(temp);
 			}
 		});
+		
+		Gauge gauge = new Gauge();  
+		 gauge.setSkin(new ModernSkin(gauge));  
+		 gauge.setTitle("ESSENCE");  
+		 gauge.setUnit("Litres");  
+		 gauge.setDecimals(0);  
+		 gauge.setValue(100.00);
+		 gauge.setAnimated(true);
+		 gauge.setAnimationDuration(500);
+		 
+		 gauge.setValueColor(Color.WHITE);  
+		 gauge.setTitleColor(Color.WHITE);  
+		 gauge.setSubTitleColor(Color.WHITE);  
+		 gauge.setBarColor(Color.BLACK);  
+		 gauge.setNeedleColor(Color.WHITE);  
+		 gauge.setThresholdColor(Color.RED);
+		 gauge.setThreshold(0);
+		 gauge.setThresholdVisible(true);
+		 gauge.setTickLabelColor(Color.GREY);  
+		 gauge.setTickMarkColor(Color.BLACK);  
+		 gauge.setTickLabelOrientation(TickLabelOrientation.ORTHOGONAL); 
 
 		VBox tableauBordGauche = new VBox();
 		tableauBordGauche.setStyle("-fx-background-color: #e6e6e6;");
@@ -182,7 +208,7 @@ public class Interface extends Application {
 				boxSuivre.setButtonCell(new SimpleObjetListCell());
 			}
 		}
-		tableauBordGauche.getChildren().addAll(position, positionX, positionY, boxSuivre, areaSaut, buttonSaut);
+		tableauBordGauche.getChildren().addAll(position, positionX, positionY, boxSuivre, areaSaut, buttonSaut, gauge);
 
 		Label timer = new Label("Timer :");
 		timer.setStyle("-fx-text-fill:white;");
@@ -223,14 +249,17 @@ public class Interface extends Application {
 			public void handle(KeyEvent event) {
 				System.out.println(event.getCode());
 				if (v != null) {
-					if (event.getCode() == KeyCode.UP) {
+					if (event.getCode() == KeyCode.UP && gauge.getValue() != 0) {
 						vc.principaleArriere(v);
+						if(gauge.getValue()>0) gauge.setValue(gauge.getValue()-1);
 					} else if (event.getCode() == KeyCode.DOWN)
 						vc.principaleAvant(v);
 					else if (event.getCode() == KeyCode.LEFT)
 						vc.retroFuseeDroite(v);
 					else if (event.getCode() == KeyCode.RIGHT)
 						vc.retroFuseeGauche(v);
+					else if (event.getCode() == KeyCode.R)
+						if(gauge.getValue()<100) gauge.setValue(gauge.getValue()+1);
 				} else if (event.getCode() == KeyCode.SPACE) {
 					// PIOU PIOU le missile
 				}
