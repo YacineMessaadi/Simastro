@@ -2,14 +2,11 @@ package Affichage;
 
 import Modele.Objets.*;
 import eu.hansolo.medusa.Gauge;
-import eu.hansolo.medusa.Gauge.ScaleDirection;
 import eu.hansolo.medusa.TickLabelOrientation;
-import eu.hansolo.medusa.skins.IndicatorSkin;
 import eu.hansolo.medusa.skins.ModernSkin;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -29,15 +26,11 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
-
 import javax.imageio.ImageIO;
 
 import Lancement.CollisionController;
@@ -100,14 +93,14 @@ public class Interface extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		
+
 		soleil = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/soleil.png")), null);
 		vaisseau = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/vaisseau.png")), null);
 		etoileImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/espace.jpg")), null);
-		tableauBordImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/tableaubord.png")), null);
+		tableauBordImage = SwingFXUtils
+				.toFXImage(ImageIO.read(this.getClass().getResource("/resources/tableaubord.png")), null);
 		planete = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/planete.png")), null);
-		
-		
+
 		final FileChooser fileChooser = new FileChooser();
 		areaSaut.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
 			try {
@@ -135,27 +128,27 @@ public class Interface extends Application {
 				sys.setfA(temp);
 			}
 		});
-		
-		Gauge gauge = new Gauge();  
-		 gauge.setSkin(new ModernSkin(gauge));  
-		 gauge.setTitle("ESSENCE");  
-		 gauge.setUnit("Litres");  
-		 gauge.setDecimals(0);  
-		 gauge.setValue(100.00);
-		 gauge.setAnimated(true);
-		 gauge.setAnimationDuration(500);
-		 
-		 gauge.setValueColor(Color.WHITE);  
-		 gauge.setTitleColor(Color.WHITE);  
-		 gauge.setSubTitleColor(Color.WHITE);  
-		 gauge.setBarColor(Color.BLACK);  
-		 gauge.setNeedleColor(Color.WHITE);  
-		 gauge.setThresholdColor(Color.RED);
-		 gauge.setThreshold(0);
-		 gauge.setThresholdVisible(true);
-		 gauge.setTickLabelColor(Color.GREY);  
-		 gauge.setTickMarkColor(Color.BLACK);  
-		 gauge.setTickLabelOrientation(TickLabelOrientation.ORTHOGONAL); 
+
+		Gauge gauge = new Gauge();
+		gauge.setSkin(new ModernSkin(gauge));
+		gauge.setTitle("ESSENCE");
+		gauge.setUnit("Litres");
+		gauge.setDecimals(0);
+		gauge.setValue(100.00);
+		gauge.setAnimated(true);
+		gauge.setAnimationDuration(500);
+
+		gauge.setValueColor(Color.WHITE);
+		gauge.setTitleColor(Color.WHITE);
+		gauge.setSubTitleColor(Color.WHITE);
+		gauge.setBarColor(Color.BLACK);
+		gauge.setNeedleColor(Color.WHITE);
+		gauge.setThresholdColor(Color.RED);
+		gauge.setThreshold(0);
+		gauge.setThresholdVisible(true);
+		gauge.setTickLabelColor(Color.GREY);
+		gauge.setTickMarkColor(Color.BLACK);
+		gauge.setTickLabelOrientation(TickLabelOrientation.ORTHOGONAL);
 
 		VBox tableauBordGauche = new VBox();
 		tableauBordGauche.setStyle("-fx-background-color: #e6e6e6;");
@@ -234,12 +227,12 @@ public class Interface extends Application {
 			stage.close();
 			System.exit(0);
 		});
-		
+
 		Button pause = new Button("Pause/Lecture");
 		pause.setOnAction(e -> {
 			pc.setPause(sys);
 		});
-		
+
 		hbox.getChildren().addAll(quitter, pause);
 
 		Vaisseau v = sys.getVaisseau();
@@ -248,20 +241,29 @@ public class Interface extends Application {
 			@Override
 			public void handle(KeyEvent event) {
 				System.out.println(event.getCode());
-				if (sys.getVaisseau()!=null && gauge.getValue() != 0) {
-					if (event.getCode() == KeyCode.UP) {
-						vc.principaleArriere(v);
-					} else if (event.getCode() == KeyCode.DOWN)
-						vc.principaleAvant(v);
-					else if (event.getCode() == KeyCode.LEFT)
-						vc.retroFuseeDroite(v);
-					else if (event.getCode() == KeyCode.RIGHT)
-						vc.retroFuseeGauche(v);
-					else if (event.getCode() == KeyCode.R)
-						if(gauge.getValue()<100) gauge.setValue(gauge.getValue()+1);
-					gauge.setValue(gauge.getValue()-0.5);
-				} else if (event.getCode() == KeyCode.SPACE) {
-					// PIOU PIOU le missile
+				if (sys.getVaisseau() != null) {
+					if (gauge.getValue() != 0) {
+						if (event.getCode() == KeyCode.UP) {
+							vc.principaleArriere(v);
+							gauge.setValue(gauge.getValue() - 0.1);
+						} else if (event.getCode() == KeyCode.DOWN) {
+							vc.principaleAvant(v);
+							gauge.setValue(gauge.getValue() - 0.1);
+						} else if (event.getCode() == KeyCode.LEFT) {
+							vc.retroFuseeDroite(v);
+							gauge.setValue(gauge.getValue() - 0.1);
+						} else if (event.getCode() == KeyCode.RIGHT) {
+							vc.retroFuseeGauche(v);
+							gauge.setValue(gauge.getValue() - 0.1);
+						}
+
+					}
+					if (event.getCode() == KeyCode.R) {
+						if (gauge.getValue() < 100)
+							gauge.setValue(gauge.getValue() + 0.05);
+					} else if (event.getCode() == KeyCode.SPACE) {
+						// Code du missile
+					}
 				}
 				event.consume();
 			}
@@ -290,17 +292,17 @@ public class Interface extends Application {
 						cc.checkCollision(sys, astresImages);
 						refresh(sys);
 
-						if(sys.getRunning()) {
+						if (sys.getRunning()) {
 							double t = Double.parseDouble(temps.getText()) + sys.getdT() * sys.getfA();
 							BigDecimal bd = new BigDecimal(t);
 							bd = bd.setScale(2, BigDecimal.ROUND_DOWN);
 							temps.setText(bd.doubleValue() + "");
 						}
-						
+
 						if (v != null) {
 							positionX.setText("X = " + Math.round(v.getPosx()));
 							positionY.setText("Y = " + Math.round(v.getPosy()));
-							
+
 						}
 
 					}
@@ -326,7 +328,6 @@ public class Interface extends Application {
 		stage.setFullScreen(true);
 		stage.show();
 	}
-
 
 	// La fonction refresh va nettoyer le canvas et le remplir à l'aide de toutes
 	// les coordonées des astres à l'instant où il est appelé,
@@ -385,7 +386,8 @@ public class Interface extends Application {
 					((Simule) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
 				}
 				graphicsContext.beginPath();
-				graphicsContext.setStroke(Color.WHITE);
+				graphicsContext.setStroke(Color.color(((Simule) o).getTrailColor()[0], ((Simule) o).getTrailColor()[1],
+						((Simule) o).getTrailColor()[2]));
 				graphicsContext.moveTo((((Simule) o).getTrail().peek().getX() + moitieX + axeX) * scale,
 						(((Simule) o).getTrail().peek().getY() + moitieY + axeY) * scale);
 				for (Position position : ((Simule) o).getTrail()) {
@@ -396,7 +398,7 @@ public class Interface extends Application {
 				graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
 						(o.getMasse()) * scale);
-				graphicsContext.setFill(Color.GREEN);
+				graphicsContext.setFill(Color.WHITE);
 				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
 			}

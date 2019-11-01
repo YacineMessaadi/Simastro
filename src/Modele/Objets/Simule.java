@@ -1,9 +1,7 @@
 package Modele.Objets;
 
-import javafx.geometry.Pos;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class Simule extends Objet {
 
@@ -11,6 +9,7 @@ public class Simule extends Objet {
 	private double vity;
 	private LinkedList<Position> trail;
 	private int listSize;
+	private Double[] trailColor;
 	
 	public Simule(String nom,double m, double px, double py, double vx, double vy){
 		super(nom,m, px, py);
@@ -18,6 +17,7 @@ public class Simule extends Objet {
 		vity = vy;
 		trail = new LinkedList<Position>();
 		listSize = 100000;
+		trailColor = new Double[] {Math.random(), Math.random(), Math.random()};
 	}
 	
 	
@@ -40,4 +40,8 @@ public class Simule extends Objet {
 	public int getListSize(){ return listSize;}
 
 	public LinkedList<Position> getTrail(){return trail;}
+	
+	public Double[] getTrailColor() {
+		return trailColor;
+	}
 }
