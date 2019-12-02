@@ -3,6 +3,8 @@ package Modele.Objets;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import Modele.Methode;
+
 /**
  * 
  * @author lantoing, dautrich, messaady, tryoeny
@@ -14,6 +16,7 @@ public class Systeme extends Observable {
 	private double gravite;
 	private double fA;
 	private double dT;
+	public Methode methode;
 	
 	private boolean running = true;
 
@@ -29,6 +32,7 @@ public class Systeme extends Observable {
 		fA = 1;
 		dT = 1;
 		rayon = 500;
+		methode = Methode.EE;
 	}
 
 	/**
@@ -44,6 +48,7 @@ public class Systeme extends Observable {
 		this.fA = fa;
 		this.dT = dT;
 		this.rayon = rayon;
+		this.methode = Methode.EE;
 	}
 
 	/**
@@ -80,6 +85,10 @@ public class Systeme extends Observable {
 
 	public double getdT() {
 		return dT;
+	}
+	
+	public void setdT(double dT) {
+		this.dT = dT;
 	}
 	
 	public double getGravite() {

@@ -26,6 +26,8 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,9 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import javax.imageio.ImageIO;
 
-import Lancement.CollisionController;
-import Lancement.PauseController;
-import Lancement.VaisseauControler;
+import Controleur.CollisionController;
+import Controleur.PauseController;
+import Controleur.SystemeController;
+import Controleur.VaisseauControler;
+import Modele.Methode;
 import Modele.Sauvegarde;
 import javafx.util.Callback;
 
@@ -62,6 +66,7 @@ public class Interface extends Application {
 	VaisseauControler vc = new VaisseauControler();
 	CollisionController cc = new CollisionController();
 	PauseController pc = new PauseController();
+	SystemeController sc = new SystemeController();
 	Canvas canvas = new Canvas(500, 500);
 	Image etoileImage;
 	Image tableauBordImage;
@@ -83,12 +88,12 @@ public class Interface extends Application {
 	Fixe libre = new Fixe("Libre", 0, 0, 0);
 	ComboBox<Objet> boxSuivre;
 
-	// Le textField et le button serve à gerer le saut dans le temps.
+	// Le textField et le button servent à gerer le saut dans le temps.
 	TextField areaSaut = new TextField();
 	String newString = "";
 	Button buttonSaut = new Button("GO !");
 
-	// Permet de generer et sauvegarder la trainée des planetes
+	// Permet de generer et sauvegarder la trainee des planetes
 	private List trail;
 
 	@Override
@@ -137,7 +142,6 @@ public class Interface extends Application {
 		gauge.setValue(100.00);
 		gauge.setAnimated(true);
 		gauge.setAnimationDuration(500);
-
 		gauge.setValueColor(Color.WHITE);
 		gauge.setTitleColor(Color.WHITE);
 		gauge.setSubTitleColor(Color.WHITE);
@@ -166,28 +170,32 @@ public class Interface extends Application {
 		nouveau.setOnAction(e -> {
 
 		});
-
 		MenuItem ouvrir = new MenuItem("Ouvrir");
-		/*
-		 * ouvrir.setOnAction(e -> { File file = fileChooser.showOpenDialog(stage); if
-		 * (file != null) { Sauvegarde save = new Sauvegarde(file);
-		 * root.setCenter(generateCanvas(save)); } });
-		 */
+		ouvrir.setOnAction(e -> {
+			File file = fileChooser.showOpenDialog(stage);
+			if (file != null) {
+				try {
+					Runtime.getRuntime().exec("java -jar simastro.jar "+ file.getName());
+					System.exit(0);
+				} catch (IOException e1) {
+					System.out.println("Erreur lors de l'ouverture du fichier.");
+				}
+			}
+		});
 
 		MenuItem enregistrer = new MenuItem("Enregistrer");
 		MenuItem enregistrerSous = new MenuItem("Enregistrer Sous");
 		fichier.getItems().addAll(nouveau, ouvrir, enregistrer, enregistrerSous);
 		menuBar.getMenus().addAll(fichier, edition, aide);
-
 		Pane pane = new Pane();
 		pane.setStyle("-fx-background-color: black;");
-
 		Label position = new Label("Position du vaisseau ...");
 		Label positionX = new Label("X = " + 0);
 		Label positionY = new Label("Y = " + 0);
+		Label vitX = new Label("vX = " + 0);
+		Label vitY = new Label("vY = " + 0);
 		boxSuivre = new ComboBox<>();
 		boxSuivre.setCellFactory(new Callback<ListView<Objet>, ListCell<Objet>>() {
-
 			@Override
 			public ListCell<Objet> call(ListView<Objet> listView) {
 				return new SimpleObjetListCell();
@@ -201,13 +209,15 @@ public class Interface extends Application {
 				boxSuivre.setButtonCell(new SimpleObjetListCell());
 			}
 		}
-		tableauBordGauche.getChildren().addAll(position, positionX, positionY, boxSuivre, areaSaut, buttonSaut, gauge);
-
+		Button methode = new Button("LeapFrog");
+		methode.setOnAction(e -> {
+			sc.setMethode(sys, Methode.LF);
+		});
+		tableauBordGauche.getChildren().addAll(position, positionX, positionY, vitX, vitY, boxSuivre, areaSaut, buttonSaut, gauge, methode);
 		Label timer = new Label("Timer :");
 		timer.setStyle("-fx-text-fill:white;");
 		Label temps = new Label("0");
 		temps.setStyle("-fx-text-fill:white;");
-
 		VBox time = new VBox();
 		time.setAlignment(Pos.CENTER);
 		time.setStyle("-fx-background-color:darkblue;");
@@ -232,45 +242,34 @@ public class Interface extends Application {
 		pause.setOnAction(e -> {
 			pc.setPause(sys);
 		});
-
-		hbox.getChildren().addAll(quitter, pause);
-
+		
+		Label dT = new Label("dT="+sys.getdT());
+		
+		Button minDT = new Button("dT-");
+		minDT.setOnAction(e -> {
+			sc.minDt(sys);
+			dT.setText("dT="+sys.getdT());
+		});
+		
+		Button plusDT = new Button("dT+");
+		plusDT.setOnAction(e -> {
+			sc.plusDt(sys);
+			dT.setText("dT="+sys.getdT());
+		});
+		
+		hbox.getChildren().addAll(quitter, pause, minDT, plusDT, dT);
 		Vaisseau v = sys.getVaisseau();
 
 		EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				System.out.println(event.getCode());
 				if (sys.getVaisseau() != null) {
-					if (gauge.getValue() != 0) {
-						if (event.getCode() == KeyCode.UP) {
-							vc.principaleArriere(v);
-							gauge.setValue(gauge.getValue() - 0.1);
-						} else if (event.getCode() == KeyCode.DOWN) {
-							vc.principaleAvant(v);
-							gauge.setValue(gauge.getValue() - 0.1);
-						} else if (event.getCode() == KeyCode.LEFT) {
-							vc.retroFuseeDroite(v);
-							gauge.setValue(gauge.getValue() - 0.1);
-						} else if (event.getCode() == KeyCode.RIGHT) {
-							vc.retroFuseeGauche(v);
-							gauge.setValue(gauge.getValue() - 0.1);
-						}
-
-					}
-					if (event.getCode() == KeyCode.R) {
-						if (gauge.getValue() < 100)
-							gauge.setValue(gauge.getValue() + 0.05);
-					} else if (event.getCode() == KeyCode.SPACE) {
-						// Code du missile
-					}
+					vc.dirigerVaisseau(event, gauge, v);
 				}
 				event.consume();
 			}
 		};
-
 		root.setCenter(generateCanvas(sys));
-
 		root.setTop(menuBar);
 		root.setLeft(tableauBordGauche);
 		root.setRight(tableauBordDroite);
@@ -286,7 +285,6 @@ public class Interface extends Application {
 			@Override
 			public void run() {
 				Runnable updater = new Runnable() {
-
 					@Override
 					public void run() {
 						cc.checkCollision(sys, astresImages);
@@ -298,16 +296,14 @@ public class Interface extends Application {
 							bd = bd.setScale(2, BigDecimal.ROUND_DOWN);
 							temps.setText(bd.doubleValue() + "");
 						}
-
 						if (v != null) {
 							positionX.setText("X = " + Math.round(v.getPosx()));
 							positionY.setText("Y = " + Math.round(v.getPosy()));
-
+							vitX.setText("vX = " + v.getVitx());
+							vitY.setText("vY = " + v.getVity());
 						}
-
 					}
 				};
-
 				while (true) {
 					try {
 						Thread.sleep((long) (sys.getdT() * 1000));
@@ -316,11 +312,9 @@ public class Interface extends Application {
 					Platform.runLater(updater);
 				}
 			}
-
 		});
 		thread.setDaemon(true);
 		thread.start();
-
 		Scene scene = new Scene(root, 900, 700);
 		stage.setScene(scene);
 		scene.setOnKeyPressed(keyListener);
@@ -446,7 +440,6 @@ public class Interface extends Application {
 			canvas.requestFocus();
 			xStart = event.getSceneX();
 			yStart = event.getSceneY();
-			System.out.println("X:" + xStart + " Y:" + yStart);
 			event.consume();
 		});
 
@@ -454,7 +447,6 @@ public class Interface extends Application {
 
 			axeX -= ((xStart - event.getSceneX())) / scale;
 			axeY -= ((yStart - event.getSceneY())) / scale;
-			System.out.println("axeX:" + axeX + "axeY:" + axeY);
 			refresh(s);
 			xStart = event.getSceneX();
 			yStart = event.getSceneY();

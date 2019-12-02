@@ -80,5 +80,7 @@ public abstract class Objet{
 	}
 
 	public String getNom(){return  nom;}
-
+	
+	public void calculTrajectoire(Systeme s) {}
+	public void demiPasLF(Systeme s) {}
 }
