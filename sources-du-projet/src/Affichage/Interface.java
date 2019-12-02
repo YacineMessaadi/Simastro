@@ -69,7 +69,6 @@ public class Interface extends Application {
 	SystemeController sc = new SystemeController();
 	Canvas canvas = new Canvas(500, 500);
 	Image etoileImage;
-	Image tableauBordImage;
 	double axeX;
 	double axeY;
 
@@ -102,8 +101,6 @@ public class Interface extends Application {
 		soleil = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/soleil.png")), null);
 		vaisseau = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/vaisseau.png")), null);
 		etoileImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/espace.jpg")), null);
-		tableauBordImage = SwingFXUtils
-				.toFXImage(ImageIO.read(this.getClass().getResource("/resources/tableaubord.png")), null);
 		planete = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/planete.png")), null);
 
 		final FileChooser fileChooser = new FileChooser();
@@ -153,8 +150,9 @@ public class Interface extends Application {
 		gauge.setTickLabelColor(Color.GREY);
 		gauge.setTickMarkColor(Color.BLACK);
 		gauge.setTickLabelOrientation(TickLabelOrientation.ORTHOGONAL);
+		gauge.setPrefSize(140,140);
 
-		VBox tableauBordGauche = new VBox();
+		VBox tableauBordGauche = new VBox(15);
 		tableauBordGauche.setStyle("-fx-background-color: #e6e6e6;");
 		VBox tableauBordDroite = new VBox();
 		HBox hbox = new HBox();
@@ -189,11 +187,17 @@ public class Interface extends Application {
 		menuBar.getMenus().addAll(fichier, edition, aide);
 		Pane pane = new Pane();
 		pane.setStyle("-fx-background-color: black;");
-		Label position = new Label("Position du vaisseau ...");
+		
+		VBox infoVaisseau = new VBox();
+		Label position = new Label("Position Vaisseau :");
 		Label positionX = new Label("X = " + 0);
 		Label positionY = new Label("Y = " + 0);
 		Label vitX = new Label("vX = " + 0);
 		Label vitY = new Label("vY = " + 0);
+		infoVaisseau.getChildren().addAll(position,positionX,positionY,vitX,vitY);
+		
+		
+		
 		boxSuivre = new ComboBox<>();
 		boxSuivre.setCellFactory(new Callback<ListView<Objet>, ListCell<Objet>>() {
 			@Override
@@ -213,23 +217,20 @@ public class Interface extends Application {
 		methode.setOnAction(e -> {
 			sc.setMethode(sys, Methode.LF);
 		});
-		tableauBordGauche.getChildren().addAll(position, positionX, positionY, vitX, vitY, boxSuivre, areaSaut, buttonSaut, gauge, methode);
+		tableauBordGauche.getChildren().addAll(infoVaisseau, boxSuivre, areaSaut, buttonSaut, methode);
 		Label timer = new Label("Timer :");
 		timer.setStyle("-fx-text-fill:white;");
 		Label temps = new Label("0");
 		temps.setStyle("-fx-text-fill:white;");
 		VBox time = new VBox();
 		time.setAlignment(Pos.CENTER);
-		time.setStyle("-fx-background-color:darkblue;");
+		time.setStyle("-fx-background-color:black;");
 		time.setMinHeight(43);
 		time.setMaxWidth(65);
-		time.setTranslateX(-80);
-		time.setTranslateY(-85);
+		
 		time.getChildren().addAll(timer, temps);
 
-		tableauBordDroite.setBackground(new Background(new BackgroundImage(tableauBordImage, BackgroundRepeat.REPEAT,
-				BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
-		tableauBordDroite.getChildren().add(time);
+		tableauBordDroite.getChildren().addAll(time,gauge);
 		tableauBordDroite.setAlignment(Pos.CENTER);
 
 		Button quitter = new Button("Quitter");
