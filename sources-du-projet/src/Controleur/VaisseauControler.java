@@ -13,12 +13,12 @@ public class VaisseauControler {
 	}
 
 	public void retroFuseeGauche(Vaisseau v) {
-		v.setAngle(v.getAngle() - 0.05);
+		v.setAngle(v.getAngle() - 0.03);
 		System.out.println("Gauche");
 	}
 
 	public void retroFuseeDroite(Vaisseau v) {
-		v.setAngle(v.getAngle() + 0.05);
+		v.setAngle(v.getAngle() + 0.03);
 		System.out.println("Droite");
 	}
 
@@ -33,7 +33,7 @@ public class VaisseauControler {
 	}
 
 	public void dirigerVaisseau(KeyEvent event, Gauge gauge, Vaisseau v, Systeme s) {
-		if (gauge.getValue() != 0) {
+		if (gauge.getValue() > 0) {
 			if (event.getCode() == KeyCode.UP) {
 				principaleArriere(v);
 				gauge.setValue(gauge.getValue() - 0.1);

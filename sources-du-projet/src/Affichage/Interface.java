@@ -68,6 +68,7 @@ public class Interface extends Application {
 	PauseController pc = new PauseController();
 	SystemeController sc = new SystemeController();
 	Canvas canvas = new Canvas(500, 500);
+	
 	Image etoileImage;
 	double axeX;
 	double axeY;
@@ -92,6 +93,8 @@ public class Interface extends Application {
 	String newString = "";
 	Button buttonSaut = new Button("GO !");
 
+	Image rotatedImage = vaisseau;
+	
 	// Permet de generer et sauvegarder la trainee des planetes
 	private List trail;
 
@@ -230,7 +233,11 @@ public class Interface extends Application {
 		
 		time.getChildren().addAll(timer, temps);
 
-		tableauBordDroite.getChildren().addAll(time,gauge);
+		ImageView iv = new ImageView(rotatedImage);
+		iv.setFitHeight(90);
+		iv.setFitWidth(90);
+		
+		tableauBordDroite.getChildren().addAll(time,gauge,iv);
 		tableauBordDroite.setAlignment(Pos.CENTER);
 
 		Button quitter = new Button("Quitter");
@@ -302,6 +309,7 @@ public class Interface extends Application {
 							positionY.setText("Y = " + Math.round(v.getPosy()));
 							vitX.setText("vX = " + v.getVitx());
 							vitY.setText("vY = " + v.getVity());
+							iv.setImage(rotatedImage);
 						}
 					}
 				};
@@ -359,7 +367,7 @@ public class Interface extends Application {
 				iv.setRotate(Math.toDegrees(((Vaisseau)o).getAngle()));
 				SnapshotParameters params = new SnapshotParameters();
 				params.setFill(Color.TRANSPARENT);
-				Image rotatedImage = iv.snapshot(params, null);
+				rotatedImage = iv.snapshot(params, null);
 				graphicsContext.drawImage(rotatedImage,
 						(o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2,

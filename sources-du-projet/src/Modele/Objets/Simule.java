@@ -8,6 +8,8 @@ public class Simule extends Objet {
 
 	private double vitx;
 	private double vity;
+	private double fx;
+	private double fy;
 	private LinkedList<Position> trail;
 	private int listSize;
 	private Double[] trailColor;
@@ -17,7 +19,7 @@ public class Simule extends Objet {
 		vitx = vx;
 		vity = vy;
 		trail = new LinkedList<Position>();
-		listSize = 100000;
+		listSize = 200;
 		trailColor = new Double[] { Math.random(), Math.random(), Math.random() };
 	}
 
@@ -35,6 +37,22 @@ public class Simule extends Objet {
 
 	public void setVity(double vity) {
 		this.vity = vity;
+	}
+	
+	public double getFx() {
+		return fx;
+	}
+
+	public void setFx(double fx) {
+		this.fx = fx;
+	}
+
+	public double getFy() {
+		return fy;
+	}
+
+	public void setFy(double fy) {
+		this.fy = fy;
 	}
 
 	public int getListSize() {
@@ -63,7 +81,7 @@ public class Simule extends Objet {
 					double force = s.getGravite() * ((getMasse() * o1.getMasse()) / (distance * distance));
 					xTotal += (Math.cos(angle) * force);
 					yTotal += (Math.sin(angle) * force);
-
+					
 				}
 			}
 
