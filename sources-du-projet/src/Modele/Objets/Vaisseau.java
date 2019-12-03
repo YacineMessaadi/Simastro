@@ -4,6 +4,7 @@ public class Vaisseau extends Simule {
 
 	private double pprincipal;
 	private double pretro;
+	private double angle;
 
 	public Vaisseau(double m, double px, double py, double vx, double vy) {
 		super("Vaisseau", m, px, py, vx, vy);
@@ -33,6 +34,14 @@ public class Vaisseau extends Simule {
 		this.pretro = pretro;
 	}
 
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
 	@Override
 	public void calculTrajectoire(Systeme s) {
 		double xTotal = 0;
@@ -49,8 +58,9 @@ public class Vaisseau extends Simule {
 
 			}
 		}
-		xTotal += getPretro();
-		yTotal += getPprincipal();
+		
+		xTotal += getPprincipal()*Math.cos(getAngle());
+		yTotal += getPprincipal()*Math.sin(getAngle());
 		((Vaisseau) this).setPretro(0);
 		((Vaisseau) this).setPprincipal(0);
 

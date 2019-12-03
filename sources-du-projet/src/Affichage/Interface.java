@@ -355,13 +355,8 @@ public class Interface extends Application {
 				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
 			} else if (o instanceof Vaisseau) {
-
-				double distX = (o.getPosx() + ((Vaisseau) o).getVitx()) - o.getPosx();
-				double distY = (o.getPosy() + ((Vaisseau) o).getVity()) - o.getPosy();
-				double angle = Math.toDegrees(Math.atan2(distY, distX));
-
 				ImageView iv = new ImageView(vaisseau);
-				iv.setRotate(angle);
+				iv.setRotate(Math.toDegrees(((Vaisseau)o).getAngle()));
 				SnapshotParameters params = new SnapshotParameters();
 				params.setFill(Color.TRANSPARENT);
 				Image rotatedImage = iv.snapshot(params, null);

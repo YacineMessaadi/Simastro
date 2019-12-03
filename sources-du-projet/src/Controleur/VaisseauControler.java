@@ -7,23 +7,27 @@ import eu.hansolo.medusa.Gauge;
 
 public class VaisseauControler {
 
+	public void setAngle(Vaisseau v, double angle) {
+		v.setAngle(angle);
+	}
+
 	public void retroFuseeGauche(Vaisseau v) {
-		v.setPretro(-0.005);
+		v.setAngle(v.getAngle() - 0.05);
 		System.out.println("Gauche");
 	}
 
 	public void retroFuseeDroite(Vaisseau v) {
-		v.setPretro(0.005);
+		v.setAngle(v.getAngle() + 0.05);
 		System.out.println("Droite");
 	}
 
 	public void principaleAvant(Vaisseau v) {
-		v.setPprincipal(-0.005);
+		v.setPprincipal(0.00005);
 		System.out.println("Avant");
 	}
 
 	public void principaleArriere(Vaisseau v) {
-		v.setPprincipal(0.005);
+		v.setPprincipal(-0.00005);
 		System.out.println("Arriere");
 	}
 
