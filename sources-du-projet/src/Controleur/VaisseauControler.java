@@ -1,5 +1,6 @@
 package Controleur;
 
+import Modele.Objets.Systeme;
 import Modele.Objets.Vaisseau;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -31,7 +32,7 @@ public class VaisseauControler {
 		System.out.println("Arriere");
 	}
 
-	public void dirigerVaisseau(KeyEvent event, Gauge gauge, Vaisseau v) {
+	public void dirigerVaisseau(KeyEvent event, Gauge gauge, Vaisseau v, Systeme s) {
 		if (gauge.getValue() != 0) {
 			if (event.getCode() == KeyCode.UP) {
 				principaleArriere(v);
@@ -50,8 +51,9 @@ public class VaisseauControler {
 		if (event.getCode() == KeyCode.R) {
 			if (gauge.getValue() < 100)
 				gauge.setValue(gauge.getValue() + 0.05);
-		} else if (event.getCode() == KeyCode.SPACE) {
-			// Code du missile
+		}
+		if(event.getCode() == KeyCode.SPACE) {
+			v.creerMissile(s);
 		}
 	}
 

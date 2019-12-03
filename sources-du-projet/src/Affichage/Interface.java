@@ -265,7 +265,7 @@ public class Interface extends Application {
 			@Override
 			public void handle(KeyEvent event) {
 				if (sys.getVaisseau() != null) {
-					vc.dirigerVaisseau(event, gauge, v);
+					vc.dirigerVaisseau(event, gauge, v, sys);
 				}
 				event.consume();
 			}
@@ -288,9 +288,9 @@ public class Interface extends Application {
 				Runnable updater = new Runnable() {
 					@Override
 					public void run() {
-						cc.checkCollision(sys, astresImages);
 						refresh(sys);
-
+						cc.checkCollision(sys, astresImages);
+					
 						if (sys.getRunning()) {
 							double t = Double.parseDouble(temps.getText()) + sys.getdT() * sys.getfA();
 							BigDecimal bd = new BigDecimal(t);
@@ -385,7 +385,12 @@ public class Interface extends Application {
 							(position.getY() + moitieY + axeY) * scale);
 				}
 				graphicsContext.stroke();
-				graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
+				if(o.getNom().equals("Missile")) {
+					graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
+							(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()*2000) * scale,
+							(o.getMasse() * 2000) * scale);
+				}
+				else graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
 						(o.getMasse()) * scale);
 				graphicsContext.setFill(Color.WHITE);

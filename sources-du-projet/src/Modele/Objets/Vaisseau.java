@@ -41,6 +41,10 @@ public class Vaisseau extends Simule {
 	public void setAngle(double angle) {
 		this.angle = angle;
 	}
+	
+	public void creerMissile(Systeme s) {
+		s.creerMissile(this);
+	}
 
 	@Override
 	public void calculTrajectoire(Systeme s) {

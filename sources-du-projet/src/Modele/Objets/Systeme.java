@@ -119,4 +119,9 @@ public class Systeme extends Observable {
 		this.running = running;
 	}
 	
+	public void creerMissile(Vaisseau v) {
+		Simule missile = new Simule("Missile", v.getMasse()/10, v.getPosx()+2*Math.cos(v.getAngle()), v.getPosy()+2*Math.sin(v.getAngle()), 0.05*Math.cos(v.getAngle()), 0.05*Math.sin(v.getAngle()));
+		listAstre.add(missile);
+	}
+	
 }
