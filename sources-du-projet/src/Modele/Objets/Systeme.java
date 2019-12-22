@@ -124,4 +124,13 @@ public class Systeme extends Observable {
 		listAstre.add(missile);
 	}
 	
+	public void explosion(Systeme s, Objet o, Objet o2) {
+		for(int i=0; i<5;i++) {
+			s.addListAstres(new Simule(o.getMasse()/2, o.getPosx()+1+Math.random()*i, o.getPosy()-1+Math.random()*i, Math.random()*i, Math.random()*i));
+		}
+		for(int i=0; i<5;i++) {
+			s.addListAstres(new Simule(o.getMasse()/2, o.getPosx()-1+Math.random()*i, o.getPosy()+1+Math.random()*i, Math.random()*-i, Math.random()*-i));
+		}
+	}
+	
 }

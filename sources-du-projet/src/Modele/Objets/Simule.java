@@ -22,6 +22,15 @@ public class Simule extends Objet {
 		listSize = 200;
 		trailColor = new Double[] { Math.random(), Math.random(), Math.random() };
 	}
+	
+	public Simule(double m, double px, double py, double vx, double vy) {
+		super("", m, px, py);
+		vitx = vx;
+		vity = vy;
+		trail = new LinkedList<Position>();
+		listSize = 100;
+		trailColor = new Double[] {1.0,1.0,1.0};
+	}
 
 	public double getVitx() {
 		return vitx;

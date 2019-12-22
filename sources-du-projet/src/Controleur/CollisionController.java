@@ -31,13 +31,22 @@ public class CollisionController {
 					if (o.getMasse() < o1.getMasse()) {
 						o1.setMasse(o1.getMasse()-o.getMasse());
 						s.deleteAstre(o);
+						if(o.getMasse() > 2) {
+							s.explosion(s, o, o1);
+						}
 					} else if(o.getMasse()==o1.getMasse()){
 						s.deleteAstre(o1);
 						s.deleteAstre(o);
+						if(o.getMasse() > 2) {
+							s.explosion(s, o, o1);
+						}
 					}
 					else {
 						o.setMasse(o.getMasse()-o1.getMasse());
 						s.deleteAstre(o1);
+						if(o1.getMasse() > 2) {
+							s.explosion(s, o1, o);
+						}
 					}
 					return true;
 				} 
