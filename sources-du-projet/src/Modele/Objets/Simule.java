@@ -94,6 +94,9 @@ public class Simule extends Objet {
 				}
 			}
 
+			xTotal /= getMasse();
+			yTotal /= getMasse();
+
 			setPosx(getPosx() + getVitx());
 			setPosy(getPosy() + getVity());
 			setVitx(getVitx() + xTotal);
