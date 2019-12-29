@@ -46,33 +46,6 @@ public class Vaisseau extends Simule {
 		s.creerMissile(this);
 	}
 
-	@Override
-	public void calculTrajectoire(Systeme s) {
-		double xTotal = 0;
-		double yTotal = 0;
-		for (Objet o1 : s.getSatellites()) {
-			if (this != o1) {
-				double distX = o1.getPosx() - getPosx();
-				double distY = o1.getPosy() - getPosy();
-				double distance = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-				double angle = Math.atan2(distY, distX);
-				double force = (s.getGravite() * getMasse() * o1.getMasse()) / Math.pow(distance, 2);
-				xTotal += (Math.cos(angle) * force);
-				yTotal += (Math.sin(angle) * force);
-
-			}
-		}
-		xTotal /= getMasse();
-		yTotal /= getMasse();
-		xTotal += getPprincipal()*Math.cos(getAngle());
-		yTotal += getPprincipal()*Math.sin(getAngle());
-		((Vaisseau) this).setPretro(0);
-		((Vaisseau) this).setPprincipal(0);
-
-		setPosx(getPosx() + getVitx());
-		setPosy(getPosy() + getVity());
-		setVitx(getVitx() + xTotal);
-		setVity(getVity() + yTotal);
-	}
+	
 
 }

@@ -2,8 +2,6 @@ package Modele.Objets;
 
 import java.util.LinkedList;
 
-import Modele.Methode;
-
 public class Simule extends Objet {
 
 	private double vitx;
@@ -19,7 +17,7 @@ public class Simule extends Objet {
 		vitx = vx;
 		vity = vy;
 		trail = new LinkedList<Position>();
-		listSize = 200;
+		listSize = 10000; 
 		trailColor = new Double[] { Math.random(), Math.random(), Math.random() };
 	}
 	
@@ -48,6 +46,15 @@ public class Simule extends Objet {
 		this.vity = vity;
 	}
 	
+	public Vecteur getVit() {
+		return new Vecteur(vitx, vity);
+	}
+	
+	public void setVit(Vecteur vit) {
+		setVitx(vit.getX());
+		setVity(vit.getY());
+	}
+	
 	public double getFx() {
 		return fx;
 	}
@@ -64,6 +71,15 @@ public class Simule extends Objet {
 		this.fy = fy;
 	}
 
+	public Vecteur getAcc() {
+		return new Vecteur(fx, fy);
+	}
+	
+	public void setAcc(Vecteur acc) {
+		setFx(acc.getX());
+		setFy(acc.getY());
+	}
+	
 	public int getListSize() {
 		return listSize;
 	}
@@ -74,77 +90,6 @@ public class Simule extends Objet {
 
 	public Double[] getTrailColor() {
 		return trailColor;
-	}
-
-	@Override
-	public void calculTrajectoire(Systeme s) {
-		if (s.methode == Methode.EE) {
-			double xTotal = 0;
-			double yTotal = 0;
-			for (Objet o1 : s.getSatellites()) {
-				if (this != o1) {
-					double distX = o1.getPosx() - getPosx();
-					double distY = o1.getPosy() - getPosy();
-					double distance = Math.sqrt(distX * distX + distY * distY);
-					double angle = Math.atan2(distY, distX);
-					double force = s.getGravite() * ((getMasse() * o1.getMasse()) / (distance * distance));
-					xTotal += (Math.cos(angle) * force);
-					yTotal += (Math.sin(angle) * force);
-					
-				}
-			}
-
-			xTotal /= getMasse();
-			yTotal /= getMasse();
-
-			setPosx(getPosx() + getVitx());
-			setPosy(getPosy() + getVity());
-			setVitx(getVitx() + xTotal);
-			setVity(getVity() + yTotal);
-		}
-		
-		else if (s.methode == Methode.LF) {
-			double xTotal = 0;
-			double yTotal = 0;
-			for (Objet o1 : s.getSatellites()) {
-				if (this != o1) {
-					double distX = o1.getPosx() - getPosx();
-					double distY = o1.getPosy() - getPosy();
-					double distance = Math.sqrt(distX * distX + distY * distY);
-					double angle = Math.atan2(distY, distX);
-					double force = s.getGravite() * ((getMasse() * o1.getMasse()) / (distance * distance));
-					xTotal += (Math.cos(angle) * force);
-					yTotal += (Math.sin(angle) * force);
-				}
-			}
-			
-			setPosx(getPosx() + getVitx());
-			setPosy(getPosy() + getVity());
-			
-			setVitx(getVitx() + xTotal);
-			setVity(getVity() + yTotal);
-		
-			
-		}
-	}
-	
-	public void demiPasLF(Systeme s) {
-		double xTotal = 0;
-		double yTotal = 0;
-		for (Objet o1 : s.getSatellites()) {
-			if (this != o1) {
-				double distX = o1.getPosx() - getPosx();
-				double distY = o1.getPosy() - getPosy();
-				double distance = Math.sqrt(distX * distX + distY * distY);
-				double angle = Math.atan2(distY, distX);
-				double force = s.getGravite() * ((getMasse() * o1.getMasse()) / (distance * distance));
-				xTotal += (Math.cos(angle) * force);
-				yTotal += (Math.sin(angle) * force);
-			}
-		}
-		//M'
-		setVitx(getVitx() + 0.5*xTotal);
-		setVity(getVity() + 0.5*yTotal);
 	}
 	
 	

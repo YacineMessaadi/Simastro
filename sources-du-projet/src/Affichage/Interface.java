@@ -41,6 +41,9 @@ import Controleur.SystemeController;
 import Controleur.VaisseauControler;
 import Modele.Methode;
 import Modele.Sauvegarde;
+import Modele.Calculs.EulerExplicite;
+import Modele.Calculs.LeapFrog;
+import Modele.Calculs.RungeKutta4;
 import javafx.util.Callback;
 
 public class Interface extends Application {
@@ -218,9 +221,20 @@ public class Interface extends Application {
 		}
 		Button methode = new Button("LeapFrog");
 		methode.setOnAction(e -> {
-			sc.setMethode(sys, Methode.LF);
+			sc.setMethode(sys, new LeapFrog());
+			System.out.println(sys.methode.getClass().getName());
 		});
-		tableauBordGauche.getChildren().addAll(infoVaisseau, boxSuivre, areaSaut, buttonSaut, methode);
+		Button methode2 = new Button("RK4");
+		methode2.setOnAction(e -> {
+			sc.setMethode(sys, new RungeKutta4());
+			System.out.println(sys.methode.getClass().getName());
+		});
+		Button methode3 = new Button("EulerEx");
+		methode3.setOnAction(e -> {
+			sc.setMethode(sys, new EulerExplicite());
+			System.out.println(sys.methode.getClass().getName());
+		});
+		tableauBordGauche.getChildren().addAll(infoVaisseau, boxSuivre, areaSaut, buttonSaut, methode, methode2, methode3);
 		Label timer = new Label("Timer :");
 		timer.setStyle("-fx-text-fill:white;");
 		Label temps = new Label("0");
@@ -315,7 +329,8 @@ public class Interface extends Application {
 				};
 				while (true) {
 					try {
-						Thread.sleep((long) (sys.getdT() * 1000));
+						if(sys.getdT()*1000/sys.getfA() >= 3) Thread.sleep((long) (sys.getdT() * 1000 / sys.getfA()));
+						else Thread.sleep((long) (sys.getdT() * 1000));
 					} catch (InterruptedException ex) {
 					}
 					Platform.runLater(updater);
@@ -355,7 +370,7 @@ public class Interface extends Application {
 			double moitieX = (canvas.getWidth() / 2) / scale;
 			double moitieY = (canvas.getHeight() / 2) / scale;
 			canvas.getGraphicsContext2D().drawImage(etoileImage, Double.MAX_VALUE, Double.MAX_VALUE);
-			if (o instanceof Soleil) {
+			if (o instanceof Fixe) {
 				graphicsContext.drawImage(soleil, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
 						(o.getMasse()) * scale);
@@ -399,6 +414,30 @@ public class Interface extends Application {
 							(o.getMasse() * 2000) * scale);
 				}
 				else graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
+						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
+						(o.getMasse()) * scale);
+				graphicsContext.setFill(Color.WHITE);
+				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
+						(o.getPosy() + moitieY + axeY) * scale);
+			}
+			else if(o instanceof Objet) {
+				if (((Ellipse) o).getTrail().size() >= ((Ellipse) o).getListSize()) {
+					((Ellipse) o).getTrail().poll();
+					((Ellipse) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
+				} else {
+					((Ellipse) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
+				}
+				graphicsContext.beginPath();
+				graphicsContext.setStroke(Color.color(((Ellipse) o).getTrailColor()[0], ((Ellipse) o).getTrailColor()[1],
+						((Ellipse) o).getTrailColor()[2]));
+				graphicsContext.moveTo((((Ellipse) o).getTrail().peek().getX() + moitieX + axeX) * scale,
+						(((Ellipse) o).getTrail().peek().getY() + moitieY + axeY) * scale);
+				for (Position position : ((Ellipse) o).getTrail()) {
+					graphicsContext.lineTo(((position.getX() + moitieX + axeX) * scale),
+							(position.getY() + moitieY + axeY) * scale);
+				}
+				graphicsContext.stroke();
+				 graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
 						(o.getMasse()) * scale);
 				graphicsContext.setFill(Color.WHITE);

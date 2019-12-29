@@ -52,7 +52,9 @@ public class CollisionController {
 				} 
 			}
 		}
+		
 		return false;
+		
 	}
 
 

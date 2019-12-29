@@ -5,15 +5,15 @@ package Modele.Objets;
  * @author lantoing, dautrich, messaady, tryoeny
  *
  */
-public abstract class Objet{
+public abstract class Objet {
 	private String nom;
 	private double masse;
 	private double posx;
 	private double posy;
 
 	/**
-	 * Objet
-	 * Constructeur d'un objet Object
+	 * Objet Constructeur d'un objet Object
+	 * 
 	 * @param m
 	 * @param px
 	 * @param py
@@ -26,8 +26,8 @@ public abstract class Objet{
 	}
 
 	/**
-	 * getMasse
-	 * Retourne la valeur de l'attribut masse de l'Objet
+	 * getMasse Retourne la valeur de l'attribut masse de l'Objet
+	 * 
 	 * @return double
 	 */
 	public double getMasse() {
@@ -35,8 +35,8 @@ public abstract class Objet{
 	}
 
 	/**
-	 * setMasse
-	 * Attribue la valeur en paramètre à l'attribut masse de l'Objet
+	 * setMasse Attribue la valeur en paramètre à l'attribut masse de l'Objet
+	 * 
 	 * @param masse
 	 */
 	public void setMasse(double masse) {
@@ -44,8 +44,8 @@ public abstract class Objet{
 	}
 
 	/**
-	 * getPosx
-	 * Retourne la valeur de l'attribut posx de l'Objet
+	 * getPosx Retourne la valeur de l'attribut posx de l'Objet
+	 * 
 	 * @return double
 	 */
 	public double getPosx() {
@@ -53,8 +53,8 @@ public abstract class Objet{
 	}
 
 	/**
-	 * setPosx
-	 * Attribue la valeur en paramètre à l'attribut posx de l'Objet
+	 * setPosx Attribue la valeur en paramètre à l'attribut posx de l'Objet
+	 * 
 	 * @param posx
 	 */
 	public void setPosx(double posx) {
@@ -62,8 +62,8 @@ public abstract class Objet{
 	}
 
 	/**
-	 * getPosy
-	 * Retourne la valeur de l'attribut posy de l'Objet
+	 * getPosy Retourne la valeur de l'attribut posy de l'Objet
+	 * 
 	 * @return double
 	 */
 	public double getPosy() {
@@ -71,16 +71,15 @@ public abstract class Objet{
 	}
 
 	/**
-	 * setPosy
-	 * Attribue la valeur en paramètre à l'attribut posy de l'Objet
+	 * setPosy Attribue la valeur en paramètre à l'attribut posy de l'Objet
+	 * 
 	 * @param posy
 	 */
 	public void setPosy(double posy) {
 		this.posy = posy;
 	}
 
-	public String getNom(){return  nom;}
-	
-	public void calculTrajectoire(Systeme s) {}
-	public void demiPasLF(Systeme s) {}
+	public String getNom() {
+		return nom;
+	}
 }

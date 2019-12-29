@@ -13,22 +13,24 @@ public class VaisseauControler {
 	}
 
 	public void retroFuseeGauche(Vaisseau v) {
+		v.setPretro(-0.00001);
 		v.setAngle(v.getAngle() - 0.03);
 		System.out.println("Gauche");
 	}
 
 	public void retroFuseeDroite(Vaisseau v) {
+		v.setPretro(0.00001);
 		v.setAngle(v.getAngle() + 0.03);
 		System.out.println("Droite");
 	}
 
 	public void principaleAvant(Vaisseau v) {
-		v.setPprincipal(0.00005);
+		v.setPprincipal(0.00001);
 		System.out.println("Avant");
 	}
 
 	public void principaleArriere(Vaisseau v) {
-		v.setPprincipal(-0.00005);
+		v.setPprincipal(-0.00001);
 		System.out.println("Arriere");
 	}
 

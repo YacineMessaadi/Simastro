@@ -1,11 +1,11 @@
 package Controleur;
 
-import Modele.Methode;
+import Modele.Calculs.CalculInterface;
 import Modele.Objets.Systeme;
 
 public class SystemeController {
 
-	public void setMethode(Systeme s, Methode m) {
+	public void setMethode(Systeme s, CalculInterface m) {
 		s.methode = m;
 	}
 
