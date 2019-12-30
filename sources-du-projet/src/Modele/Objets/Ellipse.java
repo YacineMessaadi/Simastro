@@ -14,6 +14,9 @@ public class Ellipse extends Objet {
 	private Fixe f2;
 	private double dureePeriode;
 	private double periode;
+	private double a;
+	private double b;
+	private double c;
 	private LinkedList<Position> trail;
 	private int listSize;
 	private Double[] trailColor;
@@ -34,15 +37,19 @@ public class Ellipse extends Objet {
 		f1 = fixe1;
 		f2 = fixe2;
 		this.periode = periode;
+		a = getPoint1();
+		b = getPoint2();
+		c = getC();
+		calculTrajectoire();
 		trail = new LinkedList<Position>();
-		listSize = 10000; 
+		listSize = 10000;
 		trailColor = new Double[] { Math.random(), Math.random(), Math.random() };
 	}
 
 	public int getListSize() {
 		return listSize;
 	}
-	
+
 	public LinkedList<Position> getTrail() {
 		return trail;
 	}
@@ -50,7 +57,7 @@ public class Ellipse extends Objet {
 	public Double[] getTrailColor() {
 		return trailColor;
 	}
-	
+
 	/**
 	 * getF1 Retourne la valeur de l'attribut f1 d'une Ellipse
 	 * 
@@ -88,46 +95,49 @@ public class Ellipse extends Objet {
 	}
 
 	private Vecteur getCenter() {
-		return new Vecteur((f1.getPosx() + f2.getPosx()) / 2, (f1.getPosy() + f2.getPosy()) / 2);
+		return new Vecteur(Math.abs((f1.getPosx() + f2.getPosx())) / 2, Math.abs((f1.getPosy() + f2.getPosy()) / 2));
 	}
 
-	private double getCos() {
-		return (f2.getPosx() - f1.getPosx())
-				/ Math.sqrt(Math.pow(f2.getPosy() - f1.getPosy(), 2) + Math.pow(f2.getPosx() - f1.getPosx(), 2));
+	private double getPoint1() {
+		return (Math.sqrt((Math.pow(f1.getPosx() - getPosx(), 2))
+						+ (Math.pow(f1.getPosy() - getPosy(), 2))
+				)
+				+
+				(Math.sqrt((Math.pow(f2.getPosx() - getPosx(), 2))
+						+ (Math.pow(f2.getPosy() - getPosy(), 2))
+				))) /2
+				;
 	}
 
-	private double getSin() {
-		return (f2.getPosy() - f1.getPosy())
-				/ Math.sqrt(Math.pow(f2.getPosy() - f1.getPosy(), 2) + Math.pow(f2.getPosx() - f1.getPosx(), 2));
+	private double getPoint2() {
+		return Math.sqrt(Math.pow(a, 2)
+				- Math.pow(c, 2));
 	}
 
-	private double getA() {
-		return (Math.sqrt(Math.pow(getPosx() - f1.getPosx(), 2) + Math.pow(getPosy() - f1.getPosx(), 2)) / 2)
-				+ (Math.sqrt(Math.pow(getPosx() - f2.getPosx(), 2) + Math.pow(getPosy() - f2.getPosx(), 2)) / 2);
+	private double getC() {
+		return (Math.sqrt((Math.pow(f1.getPosx() - f2.getPosx(), 2))
+			+ (Math.pow(f1.getPosy() - f2.getPosy(), 2))
+			)
+	) /2;
+	}
+	
+	private double getE() {
+		return a / c;
 	}
 
-	private double getB() {
-		return Math.sqrt(Math.pow(getA(), 2)
-				- (0.25 * (Math.pow(f2.getPosx() - f1.getPosx(), 2) + Math.pow(f2.getPosy() - f1.getPosy(), 2))));
-	}
+	/*
+	 * public void calculTrajectoire(Systeme s) { this.setPosx(this.getPoint1()
+	 * *Math.cos(this.dureePeriode / this.periode * 2 * Math.PI));
+	 * this.setPosy(this.getPoint2() *Math.sin(this.dureePeriode / this.periode * 2
+	 * * Math.PI));
+	 * 
+	 * this.dureePeriode = (this.dureePeriode + 1); }
+	 */
 
-	private Vecteur getAstrePos() {
-		double x = this.getCenter().getX()
-				+ this.getA() * this.getCos() * Math.cos(this.dureePeriode / this.periode * 2 * Math.PI)
-				- this.getB() * this.getSin() * Math.sin(this.dureePeriode / this.periode * 2 * Math.PI);
-
-		double y = this.getCenter().getY()
-				+ this.getA() * this.getSin() * Math.cos(this.dureePeriode / this.periode * 2 * Math.PI)
-				+ this.getB() * this.getCos() * Math.sin(this.dureePeriode / this.periode * 2 * Math.PI);
-
-		return new Vecteur(x, y);
-	}
-
-	public void calculTrajectoire(Systeme s) {
-		Vecteur v = this.getAstrePos();
-		this.setPosx(v.getX());
-		this.setPosy(v.getY());
-		this.dureePeriode = (this.dureePeriode + s.getdT()) % this.periode;
+	public void calculTrajectoire() {
+		this.setPosx(getCenter().getX() + Math.cos(this.dureePeriode / this.periode * 2 * Math.PI) * a);
+		this.setPosy((getCenter().getY() + Math.sin(this.dureePeriode / this.periode * 2 * Math.PI) * b) / getE());
+		this.dureePeriode = (this.dureePeriode + 1) % this.periode;
 	}
 
 }

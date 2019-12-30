@@ -14,11 +14,11 @@ public class RungeKutta4 implements CalculInterface {
 		for (Objet o : s.getSatellites()) {
 
 			if (o instanceof Cercle) {
-				((Cercle)o).calculTrajectoire(s);
+				((Cercle)o).calculTrajectoire();
 			}
 			
 			else if (o instanceof Ellipse) {
-				((Ellipse)o).calculTrajectoire(s);
+				((Ellipse)o).calculTrajectoire();
 			}
 			
 			else if (o instanceof Simule) {

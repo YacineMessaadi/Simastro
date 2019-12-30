@@ -25,7 +25,7 @@ public class CollisionController {
 	}*/
 	
 	public boolean checkCollision(Systeme s, HashMap<Objet, Circle> hm) {
-		for (Objet o : s.getSatellites()) {
+		/*for (Objet o : s.getSatellites()) {
 			for (Objet o1 : s.getSatellites()) {
 				if (o != o1 && Shape.intersect(hm.get(o), hm.get(o1)).getBoundsInLocal().getWidth() != -1) {
 					if (o.getMasse() < o1.getMasse()) {
@@ -52,7 +52,7 @@ public class CollisionController {
 				} 
 			}
 		}
-		
+		*/
 		return false;
 		
 	}
