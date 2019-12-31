@@ -5,6 +5,8 @@ public class Vaisseau extends Simule {
 	private double pprincipal;
 	private double pretro;
 	private double angle;
+	private double presPosX;
+	private double presPosY;
 
 	public Vaisseau(double m, double px, double py, double vx, double vy) {
 		super("Vaisseau", m, px, py, vx, vy);
@@ -46,6 +48,21 @@ public class Vaisseau extends Simule {
 		s.creerMissile(this);
 	}
 
-	
+	public double getPresPosX() {
+		return presPosX;
+	}
+
+	public void setPresPosX(double presPosX) {
+		this.presPosX = presPosX;
+	}
+
+	public double getPresPosY() {
+		return presPosY;
+	}
+
+	public void setPresPosY(double presPosY) {
+		this.presPosY = presPosY;
+	}
+
 
 }

@@ -1,5 +1,7 @@
 package Modele.Calculs;
 
+import Modele.Objets.Cercle;
+import Modele.Objets.Ellipse;
 import Modele.Objets.Objet;
 import Modele.Objets.Simule;
 import Modele.Objets.Systeme;
@@ -10,7 +12,16 @@ public class LeapFrog implements CalculInterface {
 
 	public void calculTrajectoire(Systeme s) {
 		for (Objet o : s.getSatellites()) {
-			if (o instanceof Simule) {
+			
+			if (o instanceof Cercle) {
+				((Cercle) o).calculTrajectoire();
+			}
+
+			else if (o instanceof Ellipse) {
+				((Ellipse) o).calculTrajectoire();
+			}
+			
+			else if (o instanceof Simule) {
 				double xTotal = 0;
 				double yTotal = 0;
 				for (Objet o1 : s.getSatellites()) {
@@ -27,8 +38,10 @@ public class LeapFrog implements CalculInterface {
 				}
 
 				if (o instanceof Vaisseau) {
-					xTotal += (((Vaisseau) o).getPprincipal()+((Vaisseau) o).getPretro())*Math.cos(((Vaisseau) o).getAngle());
-					yTotal += (((Vaisseau) o).getPprincipal()+((Vaisseau) o).getPretro())*Math.sin(((Vaisseau) o).getAngle());
+					xTotal += ((Vaisseau) o).getPprincipal() * Math.cos(((Vaisseau) o).getAngle())
+							+ ((Vaisseau) o).getPretro() * Math.sin(((Vaisseau) o).getAngle());
+					yTotal += ((Vaisseau) o).getPprincipal() * Math.sin(((Vaisseau) o).getAngle())
+							- ((Vaisseau) o).getPretro() * Math.cos(((Vaisseau) o).getAngle());
 					((Vaisseau) o).setPretro(0);
 					((Vaisseau) o).setPprincipal(0);
 				}
@@ -48,5 +61,18 @@ public class LeapFrog implements CalculInterface {
 
 		}
 
+	}
+
+	@Override
+	public void preCalcul(Systeme s) {
+		Vecteur demiVitesse = new Vecteur(s.getVaisseau().getVit().getX() + (1 * s.getVaisseau().getAcc().getX() / 2), s.getVaisseau().getVit().getY() + (1 * s.getVaisseau().getAcc().getY() / 2));
+
+		demiVitesse.multiplie(10000);
+
+		s.getVaisseau().setPresPosX(
+				s.getVaisseau().getPosx() + demiVitesse.getX());
+		s.getVaisseau().setPresPosY(
+				s.getVaisseau().getPosy() + demiVitesse.getY());
+		
 	}
 }

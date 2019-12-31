@@ -387,7 +387,23 @@ public class Interface extends Application {
 						(o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
 						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2,
 						(o.getMasse() * 2000) * scale, (o.getMasse() * 2000) * scale);
-
+				
+				// PreCalcul
+				graphicsContext.drawImage(rotatedImage,
+						(((Vaisseau)o).getPresPosX() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
+						(((Vaisseau)o).getPresPosY() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2,
+						(o.getMasse() * 2000) * scale, (o.getMasse() * 2000) * scale);
+				// PreCalcul
+				
+				graphicsContext.beginPath();
+				graphicsContext.setStroke(Color.BLUE);
+				graphicsContext.moveTo((o.getPosx() + moitieX + axeX) * scale,
+						(o.getPosy() + moitieY + axeY) * scale);
+				graphicsContext.lineTo(((((Vaisseau)o).getPresPosX() + moitieX + axeX) * scale),
+						(((Vaisseau)o).getPresPosY() + moitieY + axeY) * scale);
+				
+				graphicsContext.stroke();
+				
 				graphicsContext.setFill(Color.BLUE);
 				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
 						(o.getPosy() + moitieY + axeY) * scale);
