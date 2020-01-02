@@ -26,7 +26,7 @@ public class Main extends Application {
 				launch(args);
 			} else {
 				sa = new Sauvegarde(
-						new InputStreamReader(Main.class.getResourceAsStream("/save/04_ExempleDuSujet.astro")));
+						new InputStreamReader(Main.class.getResourceAsStream("/save/42_Test.astro")));
 				launch(args);
 			}
 		} catch (Exception e) {

@@ -1,5 +1,8 @@
 package Affichage;
 
+import Modele.Calculs.EulerExplicite;
+import Modele.Calculs.LeapFrog;
+import Modele.Calculs.RungeKutta4;
 import Modele.Objets.*;
 import eu.hansolo.medusa.Gauge;
 import eu.hansolo.medusa.TickLabelOrientation;
@@ -7,6 +10,7 @@ import eu.hansolo.medusa.skins.ModernSkin;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,12 +21,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -39,11 +42,7 @@ import Controleur.CollisionController;
 import Controleur.PauseController;
 import Controleur.SystemeController;
 import Controleur.VaisseauControler;
-import Modele.Methode;
-import Modele.Sauvegarde;
-import Modele.Calculs.EulerExplicite;
-import Modele.Calculs.LeapFrog;
-import Modele.Calculs.RungeKutta4;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 public class Interface extends Application {
@@ -61,82 +60,38 @@ public class Interface extends Application {
 	 * double scale : le parametre qui permet de simuler le zoom, on multiplie la
 	 * taille des objets par le scale, mais egalement la position
 	 */
-	BorderPane root = new BorderPane();
+	Pane root = new Pane();
+	Ecran ecran_vaisseau;
 	public Systeme sys;
-	Image soleil;
-	Image planete;
-	Image vaisseau;
+	HashMap<Ecran,Stage> listEcran = new HashMap<Ecran,Stage>();
+	ListView<Ecran> choixEcran = new ListView<Ecran>();
+
 	VaisseauControler vc = new VaisseauControler();
 	CollisionController cc = new CollisionController();
 	PauseController pc = new PauseController();
 	SystemeController sc = new SystemeController();
-	Canvas canvas = new Canvas(500, 500);
-	
-	Image etoileImage;
-	double axeX;
-	double axeY;
+	EventHandler<KeyEvent> keyListener;
 
 	HashMap<Objet, Circle> astresImages = new HashMap<Objet, Circle>();
-
-	public double scale = 1;
-
-	// Quand on fait OnMousePressed sur le canvas, on enregistre la position du
-	// curseur pour calculer le décalage à appliquer
-
-	private double xStart = 0;
-	private double yStart = 0;
 
 	// Sert à savoir si l'affichage suit actuellement un objet, pour desactiver le
 	// deplacement par exemple
 	Fixe libre = new Fixe("Libre", 0, 0, 0);
 	ComboBox<Objet> boxSuivre;
 
-	// Le textField et le button servent à gerer le saut dans le temps.
-	TextField areaSaut = new TextField();
-	String newString = "";
-	Button buttonSaut = new Button("GO !");
 
+	private Image vaisseau;
 	Image rotatedImage = vaisseau;
-	
+	Gauge gauge;
+
+
+
 	// Permet de generer et sauvegarder la trainee des planetes
 	private List trail;
 
 	@Override
 	public void start(Stage stage) throws Exception {
-
-		soleil = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/soleil.png")), null);
-		vaisseau = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/vaisseau.png")), null);
-		etoileImage = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/espace.jpg")), null);
-		planete = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/planete.png")), null);
-
-		final FileChooser fileChooser = new FileChooser();
-		areaSaut.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-			try {
-				/* Si les touches tapees ne sont pas les touches de supression */
-				if ((KeyCode.BACK_SPACE != e.getCode()) && (KeyCode.DELETE != e.getCode())) {
-					Integer.parseInt(areaSaut.getText());
-					// Sauvegarde de la valeur du textbox dans une variable
-					newString = areaSaut.getText();
-				}
-			} catch (NumberFormatException Exception) {
-				/* En cas d'exception (caractere non chiffre tape on reaffiche l'ancien text */
-				areaSaut.selectAll();
-				areaSaut.replaceSelection(newString);
-			}
-		});
-
-		buttonSaut.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-			double temp = sys.setfA(60);
-			try {
-				for (int i = 0; i < Integer.parseInt(areaSaut.getText()); i++) {
-					refresh(sys);
-				}
-				sys.setfA(temp);
-			} catch (Exception ex) {
-				sys.setfA(temp);
-			}
-		});
-
+		// La gauge de Carburant //
 		Gauge gauge = new Gauge();
 		gauge.setSkin(new ModernSkin(gauge));
 		gauge.setTitle("ESSENCE");
@@ -158,22 +113,139 @@ public class Interface extends Application {
 		gauge.setTickLabelOrientation(TickLabelOrientation.ORTHOGONAL);
 		gauge.setPrefSize(140,140);
 
-		VBox tableauBordGauche = new VBox(15);
-		tableauBordGauche.setStyle("-fx-background-color: #e6e6e6;");
-		VBox tableauBordDroite = new VBox();
-		HBox hbox = new HBox();
-		hbox.setStyle("-fx-background-color: white;");
-		hbox.setAlignment(Pos.CENTER);
 
+
+		// Permet de diriger le vaisseau //
+		Vaisseau v = sys.getVaisseau();
+		keyListener = new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if (sys.getVaisseau() != null) {
+					vc.dirigerVaisseau(event, gauge, v, sys);
+				}
+				event.consume();
+			}
+		};
+
+
+
+		// Taille de la fenetre //
+		stage.setWidth(300);
+		stage.setHeight(600);
+		stage.setOnCloseRequest(e -> e.consume());
+
+
+
+		// Création de l'écran qui sert a voir le vaisseau en tout temps //
+		if(sys.getVaisseau() != null) {
+			Stage stage_vaisseau = new Stage();
+			ecran_vaisseau = new Ecran(100, 100, this, "Vaisseau");
+			stage.setTitle("Vaisseau");
+			Scene scene_vaisseau = new Scene(ecran_vaisseau);
+			scene_vaisseau.setOnKeyPressed(keyListener);
+			stage_vaisseau.setScene(scene_vaisseau);
+			stage_vaisseau.initStyle(StageStyle.UTILITY);
+			stage_vaisseau.setOnCloseRequest(e -> e.consume());
+			System.out.println("oui");
+			stage_vaisseau.show();
+			ecran_vaisseau.refresh(sys);
+			ecran_vaisseau.setFocus(sys.getVaisseau());
+		}
+
+		vaisseau = SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/vaisseau.png")), null);
+		final FileChooser fileChooser = new FileChooser();
+
+
+
+		// Menu qui permet de choisir avec quel écran on interagit //
+		choixEcran.setCellFactory(new Callback<ListView<Ecran>, ListCell<Ecran>>() {
+			@Override
+			public ListCell<Ecran> call(ListView<Ecran> lv) {
+				return new SimpleEcranListCell();
+			}
+		});
+		choixEcran.getItems().setAll(listEcran.keySet());
+		choixEcran.setMaxHeight(100);
+
+
+
+		// Permet d'ajouter ou de retirer des écrans //
+		Label label_ecran = new Label("Gestion des Ecrans :");
+		Button button_ajout_ecran = new Button("Ajouter");
+		button_ajout_ecran.setOnAction(e -> {
+			ajout_Ecran();
+		});
+		Button button_retrait_ecran = new Button("Retirer");
+		button_retrait_ecran.setOnAction(e -> {
+			if(!listEcran.isEmpty()){
+				supprime_Ecran(choixEcran.getFocusModel().getFocusedItem());
+			} else {
+				Alert errorAlert = new Alert(AlertType.ERROR);
+				errorAlert.setHeaderText("Pas d'écran");
+				errorAlert.setContentText("Il n'y a pas d'écran à supprimer !");
+				errorAlert.showAndWait();
+			}
+		});
+		HBox hbox_gestion_ecran = new HBox(button_ajout_ecran,button_retrait_ecran);
+		VBox vBox_gestion_ecran = new VBox(label_ecran,hbox_gestion_ecran);
+
+
+
+		// Info sur le vaisseau (coordonées, ect) //
+		VBox infoVaisseau = new VBox();
+		Label position = new Label("Position Vaisseau :");
+		Label positionX = new Label("X = " + 0);
+		Label positionY = new Label("Y = " + 0);
+		Label vitX = new Label("vX = " + 0);
+		Label vitY = new Label("vY = " + 0);
+		infoVaisseau.getChildren().addAll(position,positionX,positionY,vitX,vitY);
+		infoVaisseau.setStyle("-fx-background-color: #e6e6e6;");
+
+
+		// Timer //
+		Label timer = new Label("Timer :");
+		timer.setStyle("-fx-text-fill:white;");
+		Label temps = new Label("0");
+		temps.setStyle("-fx-text-fill:white;");
+		VBox time = new VBox();
+		time.setAlignment(Pos.CENTER);
+		time.setStyle("-fx-background-color:black;");
+		time.setMinHeight(43);
+		time.setMaxWidth(65);
+		time.getChildren().addAll(timer, temps);
+
+
+		// Gestion du focus //
+		boxSuivre = new ComboBox<>();
+		boxSuivre.setCellFactory(new Callback<ListView<Objet>, ListCell<Objet>>() {
+			@Override
+			public ListCell<Objet> call(ListView<Objet> listView) {
+				return new RichObjetListCell();
+			}
+		});
+		boxSuivre.setButtonCell(new SimpleObjetListCell());
+		boxSuivre.getItems().add(libre);
+		boxSuivre.getItems().addAll(sys.getSatellites());
+		boxSuivre.setValue(libre);
+		boxSuivre.valueProperty().addListener((src,ov,nv) -> {
+			System.out.println(nv.getNom());
+			if(nv.getNom().equals("Libre")) {
+				choixEcran.getFocusModel().getFocusedItem().setFree();
+				System.out.println("L'écran est libre");
+			}
+			else if(ov != nv)
+			choixEcran.getFocusModel().getFocusedItem().setFocus(nv);
+		});
+
+		choixEcran.getSelectionModel().selectedItemProperty().addListener((src,ov,nv) -> {
+			boxSuivre.setValue(nv.getFocus());
+		});
+
+
+		// Barre pour charger des fichiers astro//
 		MenuBar menuBar = new MenuBar();
 		menuBar.setStyle("-fx-alignment: center;");
 		Menu fichier = new Menu("Fichier");
-		Menu edition = new Menu("Edition");
-		Menu aide = new Menu("Aide");
-		MenuItem nouveau = new MenuItem("Nouveau");
-		nouveau.setOnAction(e -> {
-
-		});
 		MenuItem ouvrir = new MenuItem("Ouvrir");
 		ouvrir.setOnAction(e -> {
 			File file = fileChooser.showOpenDialog(stage);
@@ -186,39 +258,12 @@ public class Interface extends Application {
 				}
 			}
 		});
+		fichier.getItems().addAll(ouvrir);
+		menuBar.getMenus().addAll(fichier);
 
-		MenuItem enregistrer = new MenuItem("Enregistrer");
-		MenuItem enregistrerSous = new MenuItem("Enregistrer Sous");
-		fichier.getItems().addAll(nouveau, ouvrir, enregistrer, enregistrerSous);
-		menuBar.getMenus().addAll(fichier, edition, aide);
-		Pane pane = new Pane();
-		pane.setStyle("-fx-background-color: black;");
-		
-		VBox infoVaisseau = new VBox();
-		Label position = new Label("Position Vaisseau :");
-		Label positionX = new Label("X = " + 0);
-		Label positionY = new Label("Y = " + 0);
-		Label vitX = new Label("vX = " + 0);
-		Label vitY = new Label("vY = " + 0);
-		infoVaisseau.getChildren().addAll(position,positionX,positionY,vitX,vitY);
-		
-		
-		
-		boxSuivre = new ComboBox<>();
-		boxSuivre.setCellFactory(new Callback<ListView<Objet>, ListCell<Objet>>() {
-			@Override
-			public ListCell<Objet> call(ListView<Objet> listView) {
-				return new SimpleObjetListCell();
-			}
-		});
-		boxSuivre.getItems().add(libre);
-		boxSuivre.setValue(libre);
-		for (Objet s : sys.getSatellites()) {
-			if (s instanceof Simule) {
-				boxSuivre.getItems().add((Simule) s);
-				boxSuivre.setButtonCell(new SimpleObjetListCell());
-			}
-		}
+
+		// Permet de changer les méthodes //
+		HBox methodes = new HBox();
 		Button methode = new Button("LeapFrog");
 		methode.setOnAction(e -> {
 			sc.setMethode(sys, new LeapFrog());
@@ -234,25 +279,10 @@ public class Interface extends Application {
 			sc.setMethode(sys, new EulerExplicite());
 			System.out.println(sys.methode.getClass().getName());
 		});
-		tableauBordGauche.getChildren().addAll(infoVaisseau, boxSuivre, areaSaut, buttonSaut, methode, methode2, methode3);
-		Label timer = new Label("Timer :");
-		timer.setStyle("-fx-text-fill:white;");
-		Label temps = new Label("0");
-		temps.setStyle("-fx-text-fill:white;");
-		VBox time = new VBox();
-		time.setAlignment(Pos.CENTER);
-		time.setStyle("-fx-background-color:black;");
-		time.setMinHeight(43);
-		time.setMaxWidth(65);
-		
-		time.getChildren().addAll(timer, temps);
+		methodes.getChildren().addAll(infoVaisseau, boxSuivre, methode, methode2, methode3);
 
-		ImageView iv = new ImageView(rotatedImage);
-		iv.setFitHeight(90);
-		iv.setFitWidth(90);
-		
-		tableauBordDroite.getChildren().addAll(time,gauge,iv);
-		tableauBordDroite.setAlignment(Pos.CENTER);
+
+		// Permet de gerer le pas de temps, de quitter ou de mettre en pause //
 
 		Button quitter = new Button("Quitter");
 		quitter.setOnAction(e -> {
@@ -264,44 +294,81 @@ public class Interface extends Application {
 		pause.setOnAction(e -> {
 			pc.setPause(sys);
 		});
-		
+
 		Label dT = new Label("dT="+sys.getdT());
-		
 		Button minDT = new Button("dT-");
 		minDT.setOnAction(e -> {
 			sc.minDt(sys);
 			dT.setText("dT="+sys.getdT());
 		});
-		
+
 		Button plusDT = new Button("dT+");
 		plusDT.setOnAction(e -> {
 			sc.plusDt(sys);
 			dT.setText("dT="+sys.getdT());
 		});
-		
-		hbox.getChildren().addAll(quitter, pause, minDT, plusDT, dT);
-		Vaisseau v = sys.getVaisseau();
 
-		EventHandler<KeyEvent> keyListener = new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				if (sys.getVaisseau() != null) {
-					vc.dirigerVaisseau(event, gauge, v, sys);
+		HBox hbox_dt = new HBox(quitter, pause, minDT, plusDT, dT);
+
+
+
+
+		/*
+
+		HBox methodes = new HBox();
+
+		areaSaut.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+			try {
+				// Si les touches tapees ne sont pas les touches de supression //
+				if ((KeyCode.BACK_SPACE != e.getCode()) && (KeyCode.DELETE != e.getCode())) {
+					Integer.parseInt(areaSaut.getText());
+					// Sauvegarde de la valeur du textbox dans une variable
+					newString = areaSaut.getText();
 				}
-				event.consume();
+			} catch (NumberFormatException Exception) {
+				// En cas d'exception (caractere non chiffre tape on reaffiche l'ancien text //
+				areaSaut.selectAll();
+				areaSaut.replaceSelection(newString);
 			}
-		};
-		root.setCenter(generateCanvas(sys));
-		root.setTop(menuBar);
-		root.setLeft(tableauBordGauche);
-		root.setRight(tableauBordDroite);
-		root.setBottom(hbox);
+		});
 
-		tableauBordGauche.setPrefWidth(150);
-		tableauBordDroite.setPrefWidth(250);
+		buttonSaut.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+			double temp = sys.setfA(60);
+			try {
+				for (int i = 0; i < Integer.parseInt(areaSaut.getText()); i++) {
+					for (Ecran ecran:
+						 listEcran) {
+						ecran.refresh(sys);
+					}
+				}
+				sys.setfA(temp);
+			} catch (Exception ex) {
+				sys.setfA(temp);
+			}
+		});
 
+		VBox tableauBordDroite = new VBox();
+		HBox hbox = new HBox();
+		hbox.setStyle("-fx-background-color: white;");
+		hbox.setAlignment(Pos.CENTER);
+
+
+
+		Pane pane = new Pane();
+		pane.setStyle("-fx-background-color: black;");
+
+
+		ImageView iv = new ImageView(rotatedImage);
+		iv.setFitHeight(90);
+		iv.setFitWidth(90);
+		
+		tableauBordDroite.getChildren().addAll(time,gauge,iv);
+		tableauBordDroite.setAlignment(Pos.CENTER);
+
+		*/
 		// root.setBackground(new Background(new BackgroundFill(Color.rgb(40, 40, 40),
 		// CornerRadii.EMPTY, Insets.EMPTY)));
+
 
 		Thread thread = new Thread(new Runnable() {
 			@Override
@@ -309,9 +376,13 @@ public class Interface extends Application {
 				Runnable updater = new Runnable() {
 					@Override
 					public void run() {
-						refresh(sys);
+						for (Ecran ecran:
+								listEcran.keySet()) {
+							ecran.refresh(sys);
+						}
+						if(ecran_vaisseau != null) ecran_vaisseau.refresh(sys);
 						cc.checkCollision(sys, astresImages);
-					
+
 						if (sys.getRunning()) {
 							double t = Double.parseDouble(temps.getText()) + sys.getdT() * sys.getfA();
 							BigDecimal bd = new BigDecimal(t);
@@ -323,7 +394,7 @@ public class Interface extends Application {
 							positionY.setText("Y = " + Math.round(v.getPosy()));
 							vitX.setText("vX = " + v.getVitx());
 							vitY.setText("vY = " + v.getVity());
-							iv.setImage(rotatedImage);
+							//iv.setImage(rotatedImage);
 						}
 					}
 				};
@@ -341,197 +412,21 @@ public class Interface extends Application {
 		thread.start();
 		Scene scene = new Scene(root, 900, 700);
 		stage.setScene(scene);
-		scene.setOnKeyPressed(keyListener);
 		stage.setTitle("Simastro");
-		stage.setFullScreen(true);
+		VBox vbox_menu = new VBox();
+		vbox_menu.getChildren().addAll(menuBar,vBox_gestion_ecran,choixEcran,boxSuivre,methodes,gauge,hbox_dt,infoVaisseau,time);
+		root.getChildren().addAll(vbox_menu);
+		stage.setFullScreen(false);
 		stage.show();
-	}
 
-	// La fonction refresh va nettoyer le canvas et le remplir à l'aide de toutes
-	// les coordonées des astres à l'instant où il est appelé,
-	// c'est pour cela qu'il a besoin d'un Systeme en param,
-	// ATTENTION quand vous le modifiez !
-	// La position (SUR LE CANVAS) d'un objet est calculé en prenant en compte :
-	// [Sa position recalculée par rapport à la taille de l'ecran],
-	// [l'axeX et Y qui correspondent au décallage dû au déplacement à l'aide de la
-	// souris] et [le Scale]
-
-	public void refresh(Systeme s) {
-		if (boxSuivre.getValue() != libre) {
-			axeX = -boxSuivre.getValue().getPosx();
-			axeY = -boxSuivre.getValue().getPosy();
+		// ajout d'un Ecran par défaut //
+		ajout_Ecran();
+		// Petit refresh pour le plaisir //
+		for (Ecran ecran:
+				listEcran.keySet()) {
+			ecran.refresh(sys);
 		}
-		canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		ArrayList<Objet> listObjet = s.getSatellites();
-		GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-		astresImages.clear();
 
-		for (Objet o : listObjet) {
-			double moitieX = (canvas.getWidth() / 2) / scale;
-			double moitieY = (canvas.getHeight() / 2) / scale;
-			canvas.getGraphicsContext2D().drawImage(etoileImage, Double.MAX_VALUE, Double.MAX_VALUE);
-			if (o instanceof Fixe) {
-				graphicsContext.drawImage(soleil, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
-						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
-						(o.getMasse()) * scale);
-				graphicsContext.setFill(Color.BLUE);
-				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
-						(o.getPosy() + moitieY + axeY) * scale);
-			} else if (o instanceof Vaisseau) {
-				ImageView iv = new ImageView(vaisseau);
-				iv.setRotate(Math.toDegrees(((Vaisseau)o).getAngle()));
-				SnapshotParameters params = new SnapshotParameters();
-				params.setFill(Color.TRANSPARENT);
-				rotatedImage = iv.snapshot(params, null);
-				graphicsContext.drawImage(rotatedImage,
-						(o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
-						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2,
-						(o.getMasse() * 2000) * scale, (o.getMasse() * 2000) * scale);
-				
-				// PreCalcul
-				graphicsContext.drawImage(rotatedImage,
-						(((Vaisseau)o).getPresPosX() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
-						(((Vaisseau)o).getPresPosY() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2,
-						(o.getMasse() * 2000) * scale, (o.getMasse() * 2000) * scale);
-				// PreCalcul
-				
-				graphicsContext.beginPath();
-				graphicsContext.setStroke(Color.BLUE);
-				graphicsContext.moveTo((o.getPosx() + moitieX + axeX) * scale,
-						(o.getPosy() + moitieY + axeY) * scale);
-				graphicsContext.lineTo(((((Vaisseau)o).getPresPosX() + moitieX + axeX) * scale),
-						(((Vaisseau)o).getPresPosY() + moitieY + axeY) * scale);
-				
-				graphicsContext.stroke();
-				
-				graphicsContext.setFill(Color.BLUE);
-				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
-						(o.getPosy() + moitieY + axeY) * scale);
-			} else if (o instanceof Simule) {
-				if (((Simule) o).getTrail().size() >= ((Simule) o).getListSize()) {
-					((Simule) o).getTrail().poll();
-					((Simule) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
-				} else {
-					((Simule) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
-				}
-				graphicsContext.beginPath();
-				graphicsContext.setStroke(Color.color(((Simule) o).getTrailColor()[0], ((Simule) o).getTrailColor()[1],
-						((Simule) o).getTrailColor()[2]));
-				graphicsContext.moveTo((((Simule) o).getTrail().peek().getX() + moitieX + axeX) * scale,
-						(((Simule) o).getTrail().peek().getY() + moitieY + axeY) * scale);
-				for (Position position : ((Simule) o).getTrail()) {
-					graphicsContext.lineTo(((position.getX() + moitieX + axeX) * scale),
-							(position.getY() + moitieY + axeY) * scale);
-				}
-				graphicsContext.stroke();
-				if(o.getNom().equals("Missile")) {
-					graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
-							(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()*2000) * scale,
-							(o.getMasse() * 2000) * scale);
-				}
-				else graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
-						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
-						(o.getMasse()) * scale);
-				graphicsContext.setFill(Color.WHITE);
-				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
-						(o.getPosy() + moitieY + axeY) * scale);
-			}
-			else if(o instanceof Objet) {
-				if (((Ellipse) o).getTrail().size() >= ((Ellipse) o).getListSize()) {
-					((Ellipse) o).getTrail().poll();
-					((Ellipse) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
-				} else {
-					((Ellipse) o).getTrail().add(new Position(o.getPosx(), o.getPosy()));
-				}
-				graphicsContext.beginPath();
-				graphicsContext.setStroke(Color.color(((Ellipse) o).getTrailColor()[0], ((Ellipse) o).getTrailColor()[1],
-						((Ellipse) o).getTrailColor()[2]));
-				graphicsContext.moveTo((((Ellipse) o).getTrail().peek().getX() + moitieX + axeX) * scale,
-						(((Ellipse) o).getTrail().peek().getY() + moitieY + axeY) * scale);
-				for (Position position : ((Ellipse) o).getTrail()) {
-					graphicsContext.lineTo(((position.getX() + moitieX + axeX) * scale),
-							(position.getY() + moitieY + axeY) * scale);
-				}
-				graphicsContext.stroke();
-				 graphicsContext.drawImage(planete, (o.getPosx() + moitieX + axeX) * scale - (o.getMasse()) * scale / 2,
-						(o.getPosy() + moitieY + axeY) * scale - (o.getMasse()) * scale / 2, (o.getMasse()) * scale,
-						(o.getMasse()) * scale);
-				graphicsContext.setFill(Color.WHITE);
-				graphicsContext.fillText(o.getNom(), (o.getPosx() + moitieX + axeX) * scale,
-						(o.getPosy() + moitieY + axeY) * scale);
-			}
-			Circle c = new Circle((o.getPosx() + moitieX + axeX) * scale, (o.getPosy() + moitieY + axeY) * scale,
-					(o.getMasse()) * scale / 2);
-			astresImages.put(o, c);
-		}
-	}
-
-	/**
-	 * Genere un Pane qui encapsule un Canvas, lui même genéré grâce au Systeme
-	 * donné en param
-	 *
-	 * @param s
-	 * @return Pane
-	 */
-	public Pane generateCanvas(Systeme s) {
-		Pane cage = new Pane();
-		cage.getChildren().add(canvas);
-		canvas.minHeight(0);
-		canvas.minWidth(0);
-		canvas.prefHeight(500);
-		canvas.prefWidth(500);
-		refresh(s);
-		canvas.widthProperty().bind(cage.widthProperty());
-		canvas.heightProperty().bind(cage.heightProperty());
-
-		BackgroundImage etoileImageBackground = new BackgroundImage(etoileImage, BackgroundRepeat.REPEAT,
-				BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-
-		cage.setBackground(new Background(etoileImageBackground));
-
-		canvas.setOnScroll(e -> {
-			// scale += (e.getDeltaY()/1000);
-
-			if (e.getDeltaY() > 0)
-				scale *= 1.1;
-			else if (e.getDeltaY() < 0)
-				scale *= 0.9;
-			refresh(s);
-			e.consume();
-		});
-
-		canvas.setOnMousePressed(event -> {
-			canvas.requestFocus();
-			xStart = event.getSceneX();
-			yStart = event.getSceneY();
-			event.consume();
-		});
-
-		canvas.setOnMouseDragged(event -> {
-
-			axeX -= ((xStart - event.getSceneX())) / scale;
-			axeY -= ((yStart - event.getSceneY())) / scale;
-			refresh(s);
-			xStart = event.getSceneX();
-			yStart = event.getSceneY();
-		});
-
-		// canvas.setTranslateX(cage.getLayoutX()/2);
-		// canvas.setTranslateY(cage.getLayoutY()/2);
-
-		return cage;
-	}
-
-	/**
-	 * Genère un Pane qui encapsule un Canvas, lui même genéré grâce à la sauvegarde
-	 * en param
-	 *
-	 * @param sauvegarde
-	 * @return Pane
-	 */
-	public Pane generateCanvas(Sauvegarde sauvegarde) {
-		Systeme sys = sauvegarde.charger();
-		return generateCanvas(sys);
 	}
 
 	/**
@@ -561,4 +456,100 @@ public class Interface extends Application {
 		}
 	}
 
+	public class SimpleEcranListCell extends ListCell<Ecran> {
+
+		@Override
+		protected void updateItem(Ecran item, boolean empty) {
+			super.updateItem(item, empty);
+			setText(null);
+			if (!empty && item != null) {
+				final String text = String.format("%s Scale : %s", item.getNom(), item.getScale());
+				setText(text);
+			}
+		}
+	}
+
+	public class RichObjetListCell extends ListCell<Objet> {
+
+		private final BorderPane borderPane = new BorderPane();
+		private final ImageView imageView_objet = new ImageView();
+		private final Label nom = new Label();
+		private final HBox hbox_coordonne = new HBox();
+		private final Label coordoneeX = new Label();
+		private final Label coordoneeY = new Label();
+
+		public RichObjetListCell() {
+			imageView_objet.setFitWidth(75);
+			imageView_objet.setPreserveRatio(true);
+			nom.setStyle("-fx-font-weight: bold; -fx-font-size: 1.5em; -fx-opacity: 1.0;");
+			coordoneeX.setStyle("-fx-font-size: 0.9em; -fx-font-style: italic; -fx-opacity: 0.5;");
+			coordoneeY.setStyle("-fx-font-size: 0.9em; -fx-font-style: italic; -fx-opacity: 0.5;");
+			hbox_coordonne.getChildren().addAll(coordoneeX,coordoneeY);
+			borderPane.setLeft(imageView_objet);
+			borderPane.setRight(nom);
+			borderPane.setBottom(hbox_coordonne);
+			//descriptionLabel.setStyle("-fx-opacity: 0.75;");
+			//descriptionLabel.setGraphic(colorRect);
+		}
+
+		@Override
+		protected void updateItem(Objet item, boolean empty) {
+			super.updateItem(item, empty);
+			setGraphic(null);
+			setText(null);
+			setContentDisplay(ContentDisplay.LEFT);
+			if (!empty && item != null) {
+				nom.setText(item.getNom());
+				coordoneeX.setText("X : "+item.getPosx());
+				coordoneeY.setText("Y : "+item.getPosy());
+				imageView_objet.setImage(associate_Image(item));
+				setText(null);
+				setGraphic(borderPane);
+			}
+		}
+	}
+
+	private void ajout_Ecran(double x, double y){
+		Stage stage = new Stage();
+		int nbEcran = listEcran.size();
+		Ecran ecran = new Ecran(x,y,this,"Ecran"+nbEcran);
+		stage.setTitle("Ecran"+nbEcran);
+		Scene scene = new Scene(ecran);
+		listEcran.put(ecran,stage);
+		choixEcran.getItems().setAll(listEcran.keySet());
+		stage.setScene(scene);
+		stage.initStyle(StageStyle.UTILITY);
+		stage.setOnCloseRequest(e->e.consume());
+		scene.setOnKeyPressed(keyListener);
+		stage.show();
+	}
+	private void ajout_Ecran(){
+		ajout_Ecran(200,200);
+	}
+
+	private boolean supprime_Ecran(Ecran ecran){
+		if(listEcran.containsKey(ecran)){
+			listEcran.get(ecran).hide();
+			listEcran.remove(ecran);
+			choixEcran.getItems().setAll(listEcran.keySet());
+			return true;
+		}
+		return false;
+	}
+
+	public Image associate_Image(Objet objet){
+		try {
+			if (objet.getClass() == Soleil.class) {
+				return SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/soleil.png")), null);
+
+			} else if (objet.getClass() == Vaisseau.class) {
+				return SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/vaisseau.png")), null);
+			} else {
+				return SwingFXUtils.toFXImage(ImageIO.read(this.getClass().getResource("/resources/planete.png")), null);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
