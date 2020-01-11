@@ -19,9 +19,10 @@ public class Systeme extends Observable {
 	private double fA;
 	private double dT;
 	public CalculInterface methode;
-	
+	private double distVoyager = -1;
+	private double vitCosmique = 0;
 	private boolean running = true;
-
+	private String cible = "";
 	private double rayon;
 	private ArrayList<Objet> listAstre = new ArrayList<Objet>();
 
@@ -61,7 +62,7 @@ public class Systeme extends Observable {
 	public void addListAstres(Objet s) {
 		this.listAstre.add(s);
 	}
-	
+
 	public void deleteAstre(Objet s) {
 		this.listAstre.remove(s);
 	}
@@ -88,23 +89,27 @@ public class Systeme extends Observable {
 	public double getdT() {
 		return dT;
 	}
-	
+
 	public void setdT(double dT) {
 		this.dT = dT;
 	}
-	
+
 	public double getGravite() {
 		return gravite;
 	}
-	
-	public void info() {
-		this.setChanged();
-		this.notifyObservers();
-	}
-	
+
 	public Vaisseau getVaisseau() {
-		for(Objet s : this.listAstre) {
-			if(s instanceof Vaisseau) return (Vaisseau) s;
+		for (Objet s : this.listAstre) {
+			if (s instanceof Vaisseau)
+				return (Vaisseau) s;
+		}
+		return null;
+	}
+
+	public Soleil getSoleil() {
+		for (Objet s : this.listAstre) {
+			if (s instanceof Soleil)
+				return (Soleil) s;
 		}
 		return null;
 	}
@@ -112,27 +117,72 @@ public class Systeme extends Observable {
 	public double getRayon() {
 		return rayon;
 	}
-	
+
 	public boolean getRunning() {
 		return running;
 	}
-	
+
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
-	
+
 	public void creerMissile(Vaisseau v) {
-		Simule missile = new Simule("Missile", v.getMasse()/10, v.getPosx()+2*Math.cos(v.getAngle()), v.getPosy()+2*Math.sin(v.getAngle()), 0.05*Math.cos(v.getAngle()), 0.05*Math.sin(v.getAngle()));
+		Simule missile = new Simule("Missile", v.getMasse() / 10, v.getPosx() + 2 * Math.cos(v.getAngle()),
+				v.getPosy() + 2 * Math.sin(v.getAngle()), 0.05 * Math.cos(v.getAngle()), 0.05 * Math.sin(v.getAngle()));
 		listAstre.add(missile);
 	}
-	
+
 	public void explosion(Systeme s, Objet o, Objet o2) {
-		for(int i=0; i<5;i++) {
-			s.addListAstres(new Simule(o.getMasse()/2, o.getPosx()+1+Math.random()*i, o.getPosy()-1+Math.random()*i, Math.random()*i, Math.random()*i));
+		for (int i = 0; i < 5; i++) {
+			s.addListAstres(new Simule(0.2, o.getPosx() + 1 + Math.random() * i,
+					o.getPosy() - 1 + Math.random() * i, Math.random() * i, Math.random() * i));
 		}
-		for(int i=0; i<5;i++) {
-			s.addListAstres(new Simule(o.getMasse()/2, o.getPosx()-1+Math.random()*i, o.getPosy()+1+Math.random()*i, Math.random()*-i, Math.random()*-i));
+		for (int i = 0; i < 5; i++) {
+			s.addListAstres(new Simule(0.2, o.getPosx() - 1 + Math.random() * i,
+					o.getPosy() + 1 + Math.random() * i, Math.random() * -i, Math.random() * -i));
 		}
 	}
+
+	public double getDistVoyager() {
+		return distVoyager;
+	}
+
+	public void setDistVoyager(double distVoyager) {
+		this.distVoyager = distVoyager;
+		double distX = getSoleil().getPosx() - getVaisseau().getPosx();
+		double distY = getSoleil().getPosy() - getVaisseau().getPosy();
+		double distance = Math.sqrt(distX * distX + distY * distY);
+		this.vitCosmique = Math.sqrt((2 * gravite * getSoleil().getMasse()) / 1000 * distance);
+	}
+
+	public boolean voyagerFini() {
+		double distX = getSoleil().getPosx() - getVaisseau().getPosx();
+		double distY = getSoleil().getPosy() - getVaisseau().getPosy();
+		double distance = Math.sqrt(distX * distX + distY * distY);
+
+		System.out.println("Vit Cosm = " + vitCosmique);
+		System.out.println("Vaisseau" + getVaisseau().getVit().getNorme());
+
+		return distance >= distVoyager && getVaisseau().getVit().getNorme() >= vitCosmique;
+	}
+
+	public String getCible() {
+		return cible;
+	}
+
+	public void setCible(String cible) {
+		this.cible = cible;
+	}
+
+	public boolean cibleDetruite() {
+		for (Objet o : getSatellites()) {
+			if (o.getNom().equals(cible)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	
 	
 }

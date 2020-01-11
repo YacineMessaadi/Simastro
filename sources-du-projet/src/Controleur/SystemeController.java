@@ -10,11 +10,12 @@ public class SystemeController {
 	}
 
 	public void minDt(Systeme s) {
-		s.setdT(s.getdT()-0.01);
+		if (s.getdT() >= 0.02)
+			s.setdT(s.getdT() - 0.01);
 	}
-	
+
 	public void plusDt(Systeme s) {
-		s.setdT(s.getdT()+0.01);
+		s.setdT(s.getdT() + 0.01);
 	}
-	
+
 }

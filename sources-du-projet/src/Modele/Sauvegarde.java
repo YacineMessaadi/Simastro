@@ -65,8 +65,16 @@ public class Sauvegarde {
 					}
 					else if (thisLine.contains("Simule") || thisLine.contains("Simulé")) {
 						sys.addListAstres(chargerSimule(thisLine));
-					} else if (thisLine.contains("Fixe"))
+					} 
+					else if (thisLine.contains("Fixe")) {
 						sys.addListAstres(chargerFixe(thisLine));
+					}
+					else if (thisLine.contains("OBJECTIF_VOYAGER")) {
+						sys.setDistVoyager(Double.parseDouble(thisLine.split(" ")[1].split("=")[1]));
+					}
+					else if (thisLine.contains("OBJECTIF_DETRUIRE")) {
+						sys.setCible(thisLine.split(" ")[1].split("=")[1]);
+					}
 				}
 				System.out.println(sys.getSatellites().size());
 			}

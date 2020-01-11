@@ -17,7 +17,7 @@ public class Simule extends Objet {
 		vitx = vx;
 		vity = vy;
 		trail = new LinkedList<Position>();
-		listSize = 10000; 
+		listSize = 100; 
 		trailColor = new Double[] { Math.random(), Math.random(), Math.random() };
 	}
 	

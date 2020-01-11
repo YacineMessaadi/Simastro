@@ -1,5 +1,6 @@
 package Lancement;
 
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 import Modele.Sauvegarde;
@@ -21,7 +22,7 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		try {
 			if (args.length != 0) {
-				InputStreamReader file = new InputStreamReader(Main.class.getResourceAsStream("/save/" + args[0]));
+				InputStreamReader file = new InputStreamReader(new FileInputStream(args[0]));
 				sa = new Sauvegarde(file);
 				launch(args);
 			} else {
