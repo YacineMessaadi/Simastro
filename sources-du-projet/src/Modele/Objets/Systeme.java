@@ -6,6 +6,8 @@ import java.util.Observable;
 import Modele.Calculs.CalculInterface;
 import Modele.Calculs.EulerExplicite;
 import Modele.Calculs.RungeKutta4;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * 
@@ -25,6 +27,7 @@ public class Systeme extends Observable {
 	private String cible = "";
 	private double rayon;
 	private ArrayList<Objet> listAstre = new ArrayList<Objet>();
+	private ObservableList<Objet> observableListAstre = FXCollections.observableArrayList(listAstre);
 
 	/**
 	 * Systeme Constructeur d'un objet Systeme sans paramètres *
@@ -61,10 +64,12 @@ public class Systeme extends Observable {
 	 */
 	public void addListAstres(Objet s) {
 		this.listAstre.add(s);
+		observableListAstre.add(s);
 	}
 
 	public void deleteAstre(Objet s) {
 		this.listAstre.remove(s);
+		observableListAstre.add(s);
 	}
 
 	/**
@@ -181,6 +186,10 @@ public class Systeme extends Observable {
 			}
 		}
 		return true;
+	}
+
+	public ObservableList<Objet> getObservableSatellites(){
+		return observableListAstre;
 	}
 
 	

@@ -9,6 +9,9 @@ import eu.hansolo.medusa.TickLabelOrientation;
 import eu.hansolo.medusa.skins.ModernSkin;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -71,7 +74,7 @@ public class Interface extends Application {
 	// Sert à savoir si l'affichage suit actuellement un objet, pour desactiver le
 	// deplacement par exemple
 	Fixe libre = new Fixe("Libre", 0, 0, 0);
-	ComboBox<Objet> boxSuivre;
+	public ComboBox<Objet> boxSuivre;
 
 	private Image vaisseau;
 	Image rotatedImage = vaisseau;
@@ -206,7 +209,6 @@ public class Interface extends Application {
 		boxSuivre.setButtonCell(new SimpleObjetListCell());
 		boxSuivre.getItems().add(libre);
 		boxSuivre.getItems().addAll(sys.getSatellites());
-		boxSuivre.setValue(libre);
 		boxSuivre.valueProperty().addListener((src, ov, nv) -> {
 			System.out.println(nv.getNom());
 			if (nv.getNom().equals("Libre")) {
@@ -334,7 +336,7 @@ public class Interface extends Application {
 						}
 						if (ecran_vaisseau != null)
 							ecran_vaisseau.refresh(sys);
-						cc.checkCollision(sys, astresImages);
+						cc.checkCollision(sys, astresImages,Interface.this);
 
 						if (sys.getRunning()) {
 							double t = Double.parseDouble(temps.getText()) + sys.getdT() * sys.getfA();
