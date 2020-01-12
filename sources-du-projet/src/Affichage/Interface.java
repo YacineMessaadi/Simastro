@@ -392,7 +392,7 @@ public class Interface extends Application {
 		stage.show();
 
 		// ajout d'un Ecran par défaut //
-		ajout_Ecran();
+		ajout_Ecran(500,500);
 		// Petit refresh pour le plaisir //
 		for (Ecran ecran : listEcran.keySet()) {
 			ecran.refresh(sys);
@@ -489,6 +489,8 @@ public class Interface extends Application {
 		listEcran.put(ecran, stage);
 		choixEcran.getItems().setAll(listEcran.keySet());
 		stage.setScene(scene);
+		stage.setWidth(x);
+		stage.setHeight(y);
 		stage.initStyle(StageStyle.UTILITY);
 		stage.setOnCloseRequest(e -> e.consume());
 		scene.setOnKeyPressed(keyListener);
