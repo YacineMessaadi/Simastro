@@ -1,3 +1,2 @@
 ﻿- java 1.8
-- mkdir bin & mkdir bin/resources & mkdir bin/saves & javac -d bin src/Affichage/*.java src/Lancement/*.java src/Modele/*.java src/Modele/Objets/*.java -classpath lib/Medusa-8.0.jar:lib/jfxrt.jar & cp -a ressources/. bin/resources/ & cp -a exemples/. bin/saves/
-- java -jar ../simastro.jar
+- java -jar ./simastro.jar

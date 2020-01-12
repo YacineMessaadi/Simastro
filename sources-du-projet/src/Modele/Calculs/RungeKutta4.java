@@ -56,16 +56,16 @@ public class RungeKutta4 implements CalculInterface {
 				double dt = 1;
 
 				Vecteur v1 = vit;
-				Vecteur v2 = vit.pas(dt / 2, v1);
-				Vecteur v3 = vit.pas(dt / 2, v2);
+				Vecteur v2 = vit.pas(dt / 2, new Vecteur(v1.getX()*dt/2, v1.getY()*dt/2));
+				Vecteur v3 = vit.pas(dt / 2, new Vecteur(v2.getX()*dt/2, v2.getY()*dt/2));
 				Vecteur v4 = vit.pas(dt, v3);
 
 				o.setPosx(o.getPosx() + (dt / 6) * (v1.getX() + 2 * v2.getX() + 2 * v3.getX() + v4.getX()));
 				o.setPosy(o.getPosy() + (dt / 6) * (v1.getY() + 2 * v2.getY() + 2 * v3.getY() + v4.getY()));
 
 				Vecteur k1 = acc;
-				Vecteur k2 = acc.pas(dt / 2, k1);
-				Vecteur k3 = acc.pas(dt / 2, k2);
+				Vecteur k2 = acc.pas(dt / 2, new Vecteur(k1.getX()*dt/2, k1.getY()*dt/2));
+				Vecteur k3 = acc.pas(dt / 2, new Vecteur(k2.getX()*dt/2, k2.getY()*dt/2));
 				Vecteur k4 = acc.pas(dt, k3);
 
 				((Simule) o).setVit(
